@@ -1,0 +1,93 @@
+\section{Présentation des résultats : forme française ou américaine}\label{sec:format}
+
+Les nombres écrits par \tkzname{tkz-fn} (graduations des axes, coordonnées, résultats de calculs) sont présentés selon l'une des deux formes suivantes :
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& forme française (\texttt{fr}) & forme américaine (\texttt{us}) \\
+\midrule
+séparateur décimal & $3{,}14$ & $3.14$ \\
+séparateur des milliers & $12\,345$ (espace fine) & $12{,}345$ \\
+intervalles & $\mathopen{]}a\,;\,b\mathclose{[}$, $\mathopen{[}a\,;\,b\mathclose{]}$ & $(a,\,b)$, $[a,\,b]$ \\
+coordonnées & $A(2\,;\,3)$ & $A(2,\,3)$ \\
+origine du repère & $O$ & $0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Les milliers ne sont séparés qu'à partir de cinq chiffres : $1234$ mais $\tkzFnPrint{12345}$.
+
+\subsection{Choix de la forme}
+
+\begin{itemize}
+  \item Par défaut, la forme est française si la langue de \tkzname{babel} est le français au début du document, américaine sinon.
+  \item Les options du package imposent la forme : |\usepackage[fr]{tkz-fn}| ou |\usepackage[us]{tkz-fn}|.
+  \item Dans le document : |\tkzFnSetup{format=us}|.
+\end{itemize}
+
+\begin{NewMacroBox}{tkzFnSetup}{\marg{options}}
+\begin{tabular}{lll}
+\toprule
+options             & défaut & définition  \\
+\midrule
+\TOline{format}{fr ou us}{forme des nombres}
+\TOline{decimals}{2}{nombre maximum de décimales de \tkzcname{tkzFnPrint}}
+\TOline{axes}{school}{présentation des axes : \texttt{school} ou \texttt{box}}
+\TOline{arrows}{end}{flèches des axes : \texttt{end}, \texttt{both} ou \texttt{none}}
+\bottomrule
+\end{tabular}
+\end{NewMacroBox}
+
+\subsection{Écrire un résultat : \tkzcname{tkzFnPrint}}
+
+\begin{NewMacroBox}{tkzFnPrint}{\oarg{décimales}\marg{expression Lua}}
+\emph{Calcule l'expression et écrit le résultat arrondi, sans zéros inutiles. Les fonctions définies par \tkzcname{tkzFnDef} sont utilisables, ainsi que \texttt{diff(f,x)}, \texttt{integral(f,a,b)} et \texttt{riemann(f,a,b,n,"left")}.}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnPrintInterval}{\oarg{oo, cc, oc ou co}\marg{a}\marg{b}}
+\emph{Écrit un intervalle ; \texttt{o} = ouvert, \texttt{c} = fermé. Les bornes sont des expressions Lua ou du texte \TeX\ (\texttt{-\textbackslash infty}).}
+\end{NewMacroBox}
+
+\subsection{Exemple}
+
+\begin{tkzexample}[latex=6cm]
+\tkzFnDef{f}{x^2-2*x-1}
+\begin{tikzpicture}[scale=.5]
+  \tkzFnInit[xmin=-2,xmax=4,
+             ymin=-3,ymax=6]
+  \tkzFnGrid \tkzFnAxes
+  \tkzFnDraw[thick,red](f)
+  \tkzFnDefPoint[draw](f,3.5){A}
+\end{tikzpicture}
+
+$A\tkzFnPrintCoord(A)$,
+$f'(3)=\tkzFnPrint{diff(f,3)}$,
+$\tkzFnPrint[4]{f(0.25)}$,
+$\tkzFnPrint{1234567.891}$,
+$I=\tkzFnPrintInterval[oc]{-\infty}{2.5}$
+
+\tkzFnSetup{format=us}
+$A\tkzFnPrintCoord(A)$,
+$f'(3)=\tkzFnPrint{diff(f,3)}$,
+$\tkzFnPrint[4]{f(0.25)}$,
+$\tkzFnPrint{1234567.891}$,
+$I=\tkzFnPrintInterval[oc]{-\infty}{2.5}$
+\tkzFnSetup{format=fr}
+\end{tkzexample}
+
+\subsection{Graduations en forme américaine}
+
+\begin{tkzexample}[latex=7cm]
+\tkzFnSetup{format=us}
+\begin{tikzpicture}[scale=.8]
+  \tkzFnInit[xmin=0,xmax=2,xstep=.25,
+             ymin=0,ymax=20000,ystep=4000]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[blue,thick]{5000*x^2}
+\end{tikzpicture}
+\tkzFnSetup{format=fr}
+\end{tkzexample}
+
+\endinput

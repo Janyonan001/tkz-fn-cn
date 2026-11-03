@@ -1,0 +1,163 @@
+\section{Points}
+
+\subsection{Placer un point sur une courbe : \tkzcname{tkzFnDefPoint}}
+
+\begin{NewMacroBox}{tkzFnDefPoint}{\oarg{options}\parg{nom de la fonction,$x$}\marg{nom du point}}
+\emph{Calcule l'image de $x$ par la fonction et définit le point de coordonnées $(x~;~f(x))$. Le point est une coordonnée de \TIKZ\ : on l'utilise ensuite par son nom. Si \tkzname{tkz-elements} est chargé, le point est aussi rangé dans la table \texttt{z} (section~\ref{sec:elements}).}
+
+\medskip
+\begin{tabular}{lll}
+ \toprule
+ arguments             & exemple & explication                         \\
+ \midrule
+ \TAline{fonction,x}{(f,0.5)}{point d'abscisse $0,5$ de la courbe de $f$}
+ \TAline{nom du point}{A}{nom de la coordonnée}
+ \bottomrule
+\end{tabular}
+
+\begin{tabular}{lll}
+ options             & défaut & explication                         \\
+ \midrule
+ \TOline{draw}{false}{le point est dessiné}
+ \TOline{size}{1.5pt}{rayon du point}
+ \bottomrule
+\end{tabular}
+
+\emph{Les autres options sont celles de \TIKZ\ et servent au dessin du point.}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnDefPointXY}{\oarg{options}\parg{$x$,$y$}\marg{nom du point}}
+\emph{Définit un point par ses coordonnées dans le repère (équivalent de \tkzcname{tkzDefPoint}).}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnDrawPoints}{\oarg{options}\parg{A,B,\dots}}
+\emph{Dessine des points ; l'option \tkzname{size} donne le rayon, les autres options sont celles de \TIKZ. Le style est \tkzname{tkzfn point} ; il remplace \tkzcname{tkzSetUpPoint} : }
+
+|\tikzset{tkzfn point/.style={draw=black,fill=yellow}}|
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnLabelPoints}{\oarg{options}\parg{A,B,\dots}}
+\emph{Écrit le nom des points ; \tkzcname{tkzFnLabelPoint}\texttt{[options](A)\{texte\}} écrit un texte quelconque. Position par défaut : \tkzname{above right}.}
+\end{NewMacroBox}
+
+\subsection{Exemple}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.25]
+  \tkzFnInit[xmin=-2,xmax=2,xstep=1,
+             ymin=-8,ymax=24,ystep=8]
+  \tkzFnGrid  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=-1.5:1]{3-1.3125*x^5-2.5*x^3}
+  \tkzFnDefPoint(f,.5){A}  \tkzFnDrawPoints(A)
+  \tkzFnLabelPoint[above right](A){$A_0$}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\subsection{Option \tkzname{draw}}
+Le point est défini et dessiné en une seule fois.
+
+\begin{tkzexample}[latex=7cm,small]
+\begin{tikzpicture}[scale=1.25]
+  \tkzFnInit[xmin=-2,xmax=2,xstep=1,
+             ymin=-8,ymax=24,ystep=8]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=-1.5:1]
+            {3-1.3125*x^5-2.5*x^3}
+  \tkzFnDefPoint[draw,red,size=2pt](f,.5){A}
+  \tkzFnLabelPoint[above right](A){$a$}
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+\subsection{Placer des points sans courbe : \tkzcname{tkzFnMarkPoints}}
+
+Avec \tkzname{tkz-fct}, il fallait définir la macro \tkzcname{tkzFctLast} avec la syntaxe de \tkzname{fp}. Il suffit maintenant de définir la fonction sans la tracer.
+
+\begin{NewMacroBox}{tkzFnMarkPoints}{\oarg{options}\parg{nom de la fonction}\marg{liste des abscisses}}
+\emph{Dessine les points de la courbe dont les abscisses sont données ; la liste s'écrit comme avec \tkzcname{foreach} : \texttt{-1.5,-1.4,...,1}. Les points ne sont pas nommés.}
+\end{NewMacroBox}
+
+\begin{tkzexample}[]
+\begin{tikzpicture}[xscale=3,yscale=2]
+  \tkzFnInit[xmin=-2,xmax=2,xstep=1,
+             ymin=-8,ymax=24,ystep=8]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDef{f}{3-1.3125*x^5-2.5*x^3}
+  \tkzFnMarkPoints(f){-1.5,-1.4,...,1}
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+\subsection{Placer des points sans se soucier des coordonnées}
+
+Le domaine s'étend de 0 à 800 et les valeurs prises par la fonction de $0$ à $\tkzFnPrint{2000}$. Les abscisses sont données dans les unités du repère.
+
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=1.6]
+  \tkzFnInit[xmin  = 0,  xmax  = 800,
+             ymin  = 0,  ymax  = 2000,
+             xstep = 100,ystep = 400]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name   = f,
+             color  = blue,
+             domain = 0:800]
+        {(1/90000)*x^3-(1/100)*x^2+(113/36)*x}
+  \tkzFnMarkPoints(f){0,450,800}
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+\subsection{Placer des points avec deux fonctions}
+
+Chaque fonction a un nom : il n'y a plus d'option \tkzname{with}.
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=4]
+  \tkzFnInit[xmin=0,xmax=3,ymin=0,ymax=2]
+  \tkzFnAxes
+  \tkzFnGrid(0,0)(3,2)
+  \tkzFnDraw[name=f,color=red,domain=1/3:3]
+            {0.125*(3*x-1)+0.375*(3*x-1)/(x*x)}
+  \tkzFnDraw[name=g,color=green,domain=1/3:3]{0.125*(3*x-1)}
+  \tikzset{tkzfn point/.style={draw=black,fill=lightgray}}
+  \tkzFnMarkPoints[size=2pt](f){1,2,3}
+  \tkzFnMarkPoints[size=2pt](g){1/3,3}
+  \tkzFnText[draw,color=red,fill=red!20](1,1.5)
+          {$f(x)=\frac{1}{8}(3x-1)+\frac{3}{8}
+           \left(\frac{3x-1}{x^2}\right)$}
+  \tkzFnText[draw,color=green!50!black,fill=green!20]
+               (2,0.3){$g(x)=\frac{1}{8}(3x-1)$}
+\end{tikzpicture}
+\end{tkzexample}
+
+\subsection{Coordonnées d'un point : \tkzcname{tkzFnShowCoord} et \tkzcname{tkzFnPrintCoord}}
+
+\begin{NewMacroBox}{tkzFnShowCoord}{\oarg{options}\parg{A}}
+\emph{Trace les segments qui joignent le point aux axes et écrit ses coordonnées (au format français ou américain). Les options \tkzname{xlabel} et \tkzname{ylabel} remplacent les valeurs calculées ; avec \tkzname{xlabel=false}, rien n'est écrit. Le style est \tkzname{tkzfn show coord}.}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnPrintCoord}{\oarg{décimales}\parg{A}}
+\emph{Écrit les coordonnées du point dans le texte.}
+\end{NewMacroBox}
+
+\begin{tkzexample}[latex=7cm]
+\begin{tikzpicture}[scale=1.2]
+  \tkzFnInit[xmin=0,xmax=3,ymin=0,ymax=4]
+  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=0:2.5]{x^2/2+1}
+  \tkzFnDefPoint[draw](f,1.5){A}
+  \tkzFnShowCoord(A)
+  \tkzFnDefPoint[draw](f,2){B}
+  \tkzFnShowCoord[xlabel=$b$,
+                  ylabel=$f(b)$](B)
+\end{tikzpicture}
+
+$A\tkzFnPrintCoord(A)$
+\end{tkzexample}
+
+\endinput

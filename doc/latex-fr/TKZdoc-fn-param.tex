@@ -1,0 +1,159 @@
+\section{Courbes paramétrées}
+
+\begin{NewMacroBox}{tkzFnParam}{\oarg{options}\marg{$x(t)$}\marg{$y(t)$}}
+\emph{$x(t)$ et $y(t)$ sont des expressions Lua de la variable \texttt{t}.}
+
+\medskip
+\begin{tabular}{lll}
+ \toprule
+ arguments             & exemple & explication                         \\
+ \midrule
+\TAline{x(t),y(t)}{\{t\string^3\}\{t\string^2\}}{$x(t)=t^3$, $y(t)=t^2$ }
+ \bottomrule
+\end{tabular}
+
+\begin{tabular}{lll}
+\toprule
+options             & défaut & définition                         \\
+\midrule
+\TOline{domain}{0:2*pi}{intervalle des valeurs de $t$}
+\TOline{samples}{200}{nombre de points}
+\TOline{clip}{false}{la courbe est découpée à la fenêtre}
+\bottomrule
+\end{tabular}
+
+\emph{Les autres options sont celles de \TIKZ.}
+\end{NewMacroBox}
+
+\subsection{Courbe paramétrée exemple 1}
+
+\begin{align*}
+x(t) &=t- \sin(t)\\
+y(t) &=1-\cos(t)\\
+\end{align*}
+
+\begin{center}
+\begin{tkzexample}[]
+\begin{tikzpicture}
+  \tkzFnInit[xmin=0,xmax=7,ymin=0,ymax=2.25,ystep=.5]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnParam[samples=400,domain=0:2*pi]{t-sin(t)}{1-cos(t)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{Courbe paramétrée exemple 2}
+
+\begin{align*}
+x(t) &=t\times \sin(t)\\
+y(t) &=t\times \cos(t)\\
+\end{align*}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.25]
+  \tkzFnInit[xmin=-50,xmax=50,xstep=10,
+             ymin=-50,ymax=50,ystep=10]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnParam[smooth,samples=200,domain=0:50]{t*sin(t)}{t*cos(t)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{Courbe paramétrée exemple 3}
+\begin{align*}
+x(t) &=\exp(t)\times \sin(t)\\
+y(t) &=\exp(t)\times \cos(t)\\
+\end{align*}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.5]
+  \tkzFnInit[xmin=-2,xmax=10,xstep=2,ymin=-10,ymax=4,ystep=2]
+  \tkzFnGrid[sub]
+  \tkzFnAxes
+  \tkzFnParam[clip,samples=400,domain=-pi:pi]{exp(t)*sin(t)}{exp(t)*cos(t)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{Courbe paramétrée exemple 4}
+\begin{align*}
+x(t) &=\cos^3(t)\\
+y(t) &=\sin^3(t)\\
+\end{align*}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.25]
+  \tkzFnInit[xmin=-1,xmax=1,xstep=.2,
+             ymin=-1,ymax=1,ystep=.2]
+  \tkzFnParam[color=red,line width=2pt,fill=orange,opacity=.4,
+              samples=400,domain=0:2*pi]{cos(t)^3}{sin(t)^3}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{Courbe paramétrée exemple 5}
+Saint Valentin version 1
+\begin{align*}
+x(t) &=\sin^3(t)\\
+y(t) &=\cos(t)-\cos^4(t)\\
+\end{align*}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=4]
+  \tkzFnInit[xmin=-1,xmax=1,ymin=-2,ymax=1]
+  \tkzFnParam[samples=500,smooth,domain=-pi:pi,
+              ball color=red,shading=ball]{sin(t)^3}{cos(t)-cos(t)^4}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{Courbe paramétrée exemple 6}
+Saint Valentin version 2 from  \url{http://mathworld.wolfram.com/HeartCurve.html}
+
+\begin{align*}
+x(t) &=\sin(t)\cos(t)\ln(\lvert t\rvert)\\
+y(t) &=\sqrt{\lvert t\rvert}\cos(t)\\
+\end{align*}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.5]
+   \tkzFnInit[xmin=-.4,xmax=.4,xstep=.1,ymin=0,ymax=.7,ystep=.1]
+   \tkzFnParam[samples=2000,smooth,domain=-1:1,
+               ball color=red,shading=ball]
+   {sin(t)*cos(t)*ln(abs(t))}{sqrt(abs(t))*cos(t)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\tkzHand En $t=0$, $\ln\lvert t\rvert$ n'est pas défini : Lua ignore ce point.
+
+\newpage
+\subsection{Courbe paramétrée exemple 7}
+Saint Valentin version 3 from  \url{http://en.wikipedia.org/wiki/Heart_(symbol)}
+
+\begin{align*}
+x(t) &=16\sin^3(t)\\
+y(t) &=13\cos(t)-5\cos(2t)-2\cos(3t)-\cos(4t)\\
+\end{align*}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.75]
+  \tkzFnInit[xmin=-20,xmax=20,xstep=5,ymin=-25,ymax=15,ystep=5]
+  \tkzFnParam[samples=400,smooth,domain=0:2*pi,
+              ball color=red,shading=ball]
+   {16*sin(t)^3}{13*cos(t)-5*cos(2*t)-2*cos(3*t)-cos(4*t)}
+\end{tikzpicture}
+\end{tkzexample}
+\endinput

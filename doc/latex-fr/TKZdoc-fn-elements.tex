@@ -1,0 +1,47 @@
+\section{Avec \tkzname{tkz-elements}}\label{sec:elements}
+
+\tkzname{tkz-elements} travaille en centimètres, \tkzname{tkz-fn} dans les unités du repère. Lorsque \tkzname{tkz-elements} est chargé, chaque point défini par \tkzcname{tkzFnDefPoint} ou \tkzcname{tkzFnDefPointXY} est aussi rangé dans la table \texttt{z}, avec ses coordonnées en centimètres :
+
+\[ \texttt{z.A} = \left(\frac{x_A}{\text{xstep}}~;~\frac{y_A}{\text{ystep}}\right) \]
+
+On peut ensuite utiliser ce point avec les objets de \tkzname{tkz-elements} : |circle(z.O, z.A)|, |line(z.A, z.B)|, etc. Dans l'autre sens, |tkzfn.point_from_z("B")| ramène le point \texttt{z.B} dans le repère, ce qui permet d'écrire ses coordonnées avec \tkzcname{tkzFnPrintCoord}.
+
+\tkzBomb Dans un repère qui n'est pas orthonormé, |circle(z.O, z.A)| est un cercle de la page et non un cercle du repère.
+
+\tkzHand \tkzname{tkz-elements} n'est pas chargé par \tkzname{tkz-fn} ; l'exemple suivant demande |\usepackage{tkz-elements}|.
+
+\begin{tkzltxexample}[]
+\tkzFnDef{f}{x^2/2}
+\begin{tikzpicture}
+  \tkzFnInit[xmin=-3,xmax=3,ymin=-2,ymax=6,ystep=2]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[thick,red](f)
+  \tkzFnDefPoint(f,2){A}       % A(2;2) dans le repère, z.A = (2,1) en cm
+  \tkzFnDefPointXY(0,0){O}
+  \directlua{
+    C.OA = circle(z.O, z.A)     % tkz-elements travaille en cm
+    z.B  = C.OA.south
+  }
+  \tkzGetNodes
+  \draw[blue] (O) circle [radius=\tkzUseLua{C.OA.radius}];
+  \tkzFnDrawPoints[red](A,O)
+  \fill[blue] (B) circle (1.5pt) node[below right] {$B$};
+\end{tikzpicture}
+
+\directlua{tkzfn.point_from_z("B")}
+$B\tkzFnPrintCoord(B)$   % (0 ; -4,47) dans le repère
+\end{tkzltxexample}
+
+\subsection{En Lua}
+
+Les objets de \tkzname{tkz-fn} sont accessibles en Lua :
+\begin{itemize}
+  \item |FN.f(2)| : image de 2 par la fonction $f$ ;
+  \item |tkzfn.fct("sin(x)")| : crée une fonction (|FN.g = tkzfn.fct("sin(x)")|), on peut aussi donner une fonction Lua ;
+  \item |tkzfn.derivative(f, x)|, |tkzfn.integral(f, a, b)| ;
+  \item |tkzfn.to_page(x, y)| et |tkzfn.to_user(X, Y)| : conversions entre le repère et la page ;
+  \item |tkzfn.points.A| : coordonnées de $A$ dans le repère.
+\end{itemize}
+
+\endinput

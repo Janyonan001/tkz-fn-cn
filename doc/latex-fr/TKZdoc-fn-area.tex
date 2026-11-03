@@ -1,0 +1,189 @@
+\section{Surfaces}
+
+Il s'agit de représenter la partie du plan comprise entre la courbe représentative d'une fonction, l'axe des abscisses et les droites d'équation $x=a$ et $x=b$, ou bien la partie du plan comprise entre deux courbes.
+
+\subsection{Représentation d'une surface : \tkzcname{tkzFnArea}}
+
+\begin{NewMacroBox}{tkzFnArea}{\oarg{options}\parg{f} \textrm{ou} \oarg{options}\parg{f,g}}
+\emph{Avec un seul argument, la surface est comprise entre la courbe de $f$ et l'axe des abscisses. Avec deux arguments, elle est comprise entre les courbes de $f$ et de $g$ ; $g$ peut être un nombre : \texttt{(f,12)}.}
+
+\begin{tabular}{lll}
+\toprule
+options             & défaut & définition                         \\
+\midrule
+\TOline{domain}{xmin:xmax}{intervalle $[a~;~b]$}
+\TOline{where}{both}{\texttt{above} : seulement là où $f\geq g$ ; \texttt{below} : là où $f\leq g$}
+\TOline{samples}{200}{nombre de points}
+\TOline{clip}{true}{la surface est découpée à la fenêtre}
+\bottomrule
+\end{tabular}
+
+\emph{Les autres options sont celles de \TIKZ\ (\tkzname{fill}, \tkzname{pattern}, \tkzname{opacity}\dots) ; le style est \tkzname{tkzfn area}.}
+\end{NewMacroBox}
+
+\tkzHand Les fonctions n'ont pas besoin d'être tracées ; l'ordre de tracé (avant ou après la surface) permet de choisir ce qui est au premier plan.
+
+\subsection{Naissance de la fonction logarithme népérien}
+
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=2]
+ \tkzFnInit[xmin=0,xmax=3,xstep=1,
+            ymin=-2,ymax=2,ystep=1]
+ \tkzFnGrid
+ \tkzFnAxes
+ \tkzFnDraw[name=f,domain=0.4:3]{1/x}
+ \tkzFnDefPoint(f,1){A}
+ \tkzFnDefPoint(f,2){B}
+ \tkzFnLabelPoints[above right](A,B)
+ \tkzFnArea[fill=blue!30,domain=1:2](f)
+ \tkzFnDraw[name=g,domain=0.5:3]{ln(x)}
+ \tkzFnArea[fill=red!30,domain=1:2](g)
+ \tkzFnShowCoord(A)
+ \tkzFnShowCoord(B)
+ \tkzFnDrawPoints(A,B)
+\end{tikzpicture}
+\end{tkzexample}
+
+Les deux aires sont égales à $\ln 2\approx\tkzFnPrint[4]{integral(f,1,2)}$ et $2\ln 2-1\approx\tkzFnPrint[4]{integral(g,1,2)}$ : |\tkzFnPrint[4]{integral(f,1,2)}|.
+
+\subsection{Surface simple}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=1.75]
+ \tkzFnInit[xmin=0,xmax=800,xstep=100,
+            ymin=0,ymax=2000,ystep=400]
+ \tkzFnGrid
+ \tkzFnAxes
+ \tkzFnDraw[name=f,domain=0:800]
+     {(1/90000)*x^3-(1/100)*x^2+(113/36)*x}
+ \tkzFnDefPointXY[draw](450,400){a}
+ \tkzFnArea[fill=orange!50,domain=0:450](f)
+ \tkzFnArea[fill=orange!80,domain=450:800](f)
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\newpage
+\subsection{Surface et hachures}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=2]
+  \tkzFnInit[xmin=-3,xmax=4,ymin=-2,ymax=4]
+  \tkzFnGrid(-3,-2)(4,4)
+  \tkzFnAxes[ticks=false]
+  \tkzFnDraw[name=f,domain=-2.15:3.2]{(2+x)*exp(-x)}
+  \tkzFnArea[pattern=north west lines,domain=-2:2](f)
+  \tkzFnTangent[draw,color=blue](f,0)
+  \tkzFnTangent[draw,color=blue](f,-1)
+  \tkzFnDefPoint(f,2){C}
+  \tkzFnDefPointXY(2,0){B}
+  \tkzFnDrawPoints(B,C)  \tkzFnLabelPoints[above right](B,C)
+  \tkzFnRep
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\newpage
+\subsection{Surface comprise entre deux courbes en couleur}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.5]
+  \tkzFnInit[xmin=0,xmax=5,ymin=0,ymax=5]
+  \tkzFnGrid  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=0:5]{x}
+  \tkzFnDraw[name=g,domain=1:5]{ln(x)}
+  \tkzFnArea[fill=orange!50,domain=1:5](f,g)
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\subsection{Surface comprise entre deux courbes avec des hachures}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=.8]
+  \tkzFnInit[xmin=0,xmax=5,ymin=0,ymax=5]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=0:5]{x}
+  \tkzFnDraw[name=g,domain=1:5]{ln(x)}
+  \tkzFnArea[pattern=north west lines,domain=1:5](f,g)
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+%<--------------------------------------------------------------------------->
+\subsection{Surface comprise entre deux courbes : option \tkzname{where}}
+Les courbes se coupent. Avec \tkzname{where=above}, seule la partie où la courbe de $g$ est au-dessus de celle de $f$ est représentée.
+
+\begin{tkzexample}[latex=7cm]
+\begin{tikzpicture}[scale=1.25]
+ \tkzFnInit[xmin=0,xmax=5,
+            ymin=-1,ymax=3]
+ \tkzFnGrid
+ \tkzFnAxes
+ \tkzFnDraw[name=f,domain=0.5:5]{1/x}
+ \tkzFnDraw[name=g,domain=1:5]{ln(x)}
+ \tkzFnArea[where=above,
+            fill=magenta!50,
+            domain=1:4](g,f)
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\newpage
+\subsection{Surface comprise entre deux courbes : courbes de Lorentz}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.25]
+  \tkzFnInit[xmin=0,xmax=1,ymin=0,ymax=1,xstep=0.1,ystep=0.1]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,color=red,domain=0:1]{(exp(x)-1)/(exp(1)-1)}
+  \tkzFnDraw[name=g,color=blue,domain=0:1]{x^3}
+  \tkzFnDraw[name=h,color=green,domain=0:1]{x}
+  \tkzFnArea[fill=purple!40,domain=0:1](h,g)
+  \tkzFnArea[fill=gray!60,domain=0:1](h,f)
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\subsection{Mélange de styles}
+
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=2.5]
+   \tkzFnInit[xmin=-1,xmax=4,ymin=0,ymax=5]
+   \tkzFnGrid
+   \tkzFnAxes
+   \tkzFnDraw[name=f,domain=-.5:4]{4*x-x^2+4/(x^2+1)^2}
+   \tkzFnDraw[name=g,domain=-.5:4]{x-1+4/(x^2+1)^2}
+   \tkzFnArea[fill=green,domain=1:4](f,g)
+   \tkzFnArea[pattern=north west lines,domain=-.5:1](f,g)
+   \tkzFnRep
+   \tkzFnText(2.5,4.5){$C_f$}
+   \tkzFnText(2.5,1){$C_g$}
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+%<--------------------------------------------------------------------------->
+\subsection{Courbes de niveaux}
+Avec \tkzname{tkz-fct}, il fallait définir des macros pour les fonctions constantes ; il suffit maintenant d'écrire le nombre comme second argument (lignes 10 à 14).
+
+\begin{tkzexample}[num]
+\begin{tikzpicture}[scale=.75]
+ \tkzFnInit[xmin=0,xmax=20,ymin=0,ymax=12]
+ \tkzFnGrid[color=orange,sub](0,0)(20,12)
+ \tkzFnAxes
+ \tkzFnDraw[name=a,samples=400,domain=0:8]{(32-4*x)^0.5}
+ \tkzFnDraw[name=b,samples=400,domain=0:18]{(72-4*x)^0.5}
+ \tkzFnDraw[name=c,samples=400,domain=0:20]{(112-4*x)^0.5}
+ \tkzFnDraw[name=d,samples=400,domain=2:20]{(152-4*x)^0.5}
+ \tkzFnDraw[name=e,samples=400,domain=12:20]{(192-4*x)^0.5}
+ \tkzFnArea[fill=gray!80,domain=0:8](b,a)
+ \tkzFnArea[fill=gray!80,domain=8:18](b,0)
+ \tkzFnArea[fill=gray!50,domain=2:20](d,c)
+ \tkzFnArea[fill=gray!50,domain=0:2](12,c)
+ \tkzFnArea[fill=gray!20,domain=12:20](12,e)
+\end{tikzpicture}
+\end{tkzexample}
+
+\endinput

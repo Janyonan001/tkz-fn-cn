@@ -1,0 +1,50 @@
+\section{从 \tkzname{tkz-fct} 到 \tkzname{tkz-fn}}
+
+\subsection{宏的对应关系}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\tkzname{tkz-fct} / \tkzname{tkz-base} & \tkzname{tkz-fn} \\
+\midrule
+|\tkzInit| & |\tkzFnInit| \\
+|\tkzGrid[sub,subxstep,subystep]| & |\tkzFnGrid[sub,subdx,subdy]| \\
+|\tkzAxeXY|、|\tkzAxeX|、|\tkzAxeY| & |\tkzFnAxes|、|\tkzFnAxisX|、|\tkzFnAxisY| \\
+|\tkzDrawX|、|\tkzDrawXY| & |\tkzFnAxisX[ticks=false]|、|\tkzFnAxes[ticks=false]| \\
+|\tkzAxeX[trig=2]| & |\tkzFnAxisX[trig=2]| \\
+|\tkzClip|、|\tkzRep|、|\tkzText| & |\tkzFnClip|、|\tkzFnRep|、|\tkzFnText| \\
+|\tkzFct{x**2}| & |\tkzFnDraw{x^2}| 或 |\tkzFnDraw[name=f]{x^2}| \\
+|\tkzDefPointByFct(2)| & |\tkzFnDefPoint(f,2){A}| \\
+|\tkzDefPoint(1,2){A}| & |\tkzFnDefPointXY(1,2){A}| \\
+|\tkzDrawPoint|、|\tkzLabelPoint| & |\tkzFnDrawPoints|、|\tkzFnLabelPoint| \\
+|\tkzSetUpPoint| & 样式 |tkzfn point| \\
+|\tkzPointShowCoord| & |\tkzFnShowCoord| \\
+|\tkzDrawTangentLine[with=b](1)| & |\tkzFnTangent(g,1)| \\
+|\tkzDrawArea[domain=1:2]| & |\tkzFnArea[domain=1:2](f)| \\
+|\tkzDrawAreafg[between=a and b]| & |\tkzFnArea(f,g)| \\
+|\tkzDrawRiemannSum|、|...Inf|、|...Sup| & |\tkzFnRiemann[method=left](f)|、|inf|、|sup| \\
+|\tkzDrawRiemannSumMid| & |\tkzFnRiemann[method=mid](f)|（见下文） \\
+|\tkzFctPar|、|\tkzFctPolar| & |\tkzFnParam|、|\tkzFnPolar| \\
+|\tkzVLine(s)|、|\tkzHLine(s)| & |\tkzFnVLine(s)|、|\tkzFnHLine(s)| \\
+|\tkzDefSetOfPoints|、|\tkzDrawSetOfPoints| & |\tkzFnDrawData| \\
+|\tkzXH| & 暂无对应 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{主要变化}
+
+\begin{enumerate}
+  \item 表达式为 Lua 表达式：|x^2| 代替 |x**2|，自然对数写为 |ln(x)| 或 |log(x)|，|1/3| 是小数除法。
+  \item 变量始终为 |x|，即使 \tkzname{xstep} 不为 1：不再使用 |\x|。
+  \item 函数通过名称给出；\tkzname{with} 选项及 \texttt{a}、\texttt{b} 等引用已取消。不再有 26 个函数的限制。
+  \item \tkzcname{tkzFctLast} 和 \tkzcname{tkzFctgnua} 已不存在：要在不绘制曲线的情况下放置点或切线，用 \tkzcname{tkzFnDef} 定义函数即可。
+  \item 不再需要 \tkzimp{Horner} 形式，负数的幂运算正确。
+  \item 半切线长度 \tkzname{kl} 和 \tkzname{kr} 始终以 $x$ 轴单位给出；切线样式（\tkzname{tkzfn tangent}）默认为空，而 \tkzname{tkz-fct} 默认画箭头。
+  \item 使用 \tkzname{method=mid} 时，矩形高度为区间中点处的值；使用 \tkzname{tkz-fct} 时为端点值的平均。
+  \item 曲线裁剪到窗口内，并在竖直渐近线处中断。
+  \item 数字按美式或法式格式书写，无需 \tkzname{numprint}。
+  \item 新增坐标轴样式：两端箭头（\tkzname{arrows=both}）和"矩形框"坐标轴（\tkzname{box}）。
+\end{enumerate}
+
+\endinput

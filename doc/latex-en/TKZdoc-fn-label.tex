@@ -1,0 +1,35 @@
+\section{Naming the curves}
+
+It is useful to give a name to the curves. Let us take as an example the function $f$ defined by:
+
+\[
+   x>0\ \text{and}\ f(x)=\dfrac{x^2+x-1}{x^3}
+\]
+
+A title is easily written with the macro \tkzcname{tkzFnText}. The coordinates are given in the units of the axes. To place a text along the curve, the simplest way is to define a point of the curve and to use its name.
+
+\begin{tkzltxexample}[num]
+  \tkzFnDefPoint(f,3){P}
+  \tkzFnText[above right](P){${\mathcal{C}}_f$}
+\end{tkzltxexample}
+
+The first line defines the point $P$ of the graph with $x=3$. The second one places the text at $P$. The \TIKZ\ options refine the result.
+
+\subsection{Adding a label}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}
+  \tkzFnInit[xmin=0,xmax=10,
+             ymin=0,ymax=1.2,ystep=0.2]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,thick,color=red,domain=0.55:10]{(x*x+x-1)/x^3}
+  \tkzFnText(3,-0.3){\textbf{Graph of} $\mathbf{f}$}
+  \tkzFnDefPoint(f,3){P}
+  \tkzFnText[above right,text=red](P){${\mathcal{C}}_f$}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\endinput

@@ -1,0 +1,163 @@
+\section{点}
+
+\subsection{曲线上的点：\tkzcname{tkzFnDefPoint}}
+
+\begin{NewMacroBox}{tkzFnDefPoint}{\oarg{选项}\parg{函数名,$x$}\marg{点名}}
+\emph{计算函数在 $x$ 处的值并定义点 $(x, f(x))$。该点是一个 \TIKZ\ 坐标，之后通过名称引用。若加载了 \tkzname{tkz-elements}，该点同时存储在表 \texttt{z} 中（见第~\ref{sec:elements} 节）。}
+
+\medskip
+\begin{tabular}{lll}
+ \toprule
+ 参数             & 示例 & 说明                         \\
+ \midrule
+ \TAline{函数,x}{(f,0.5)}{$f$ 图像上 $x=0.5$ 处的点}
+ \TAline{点名}{A}{坐标名称}
+ \bottomrule
+\end{tabular}
+
+\begin{tabular}{lll}
+ 选项             & 默认值 & 说明                         \\
+ \midrule
+ \TOline{draw}{false}{绘制该点}
+ \TOline{size}{1.5pt}{点的半径}
+ \bottomrule
+\end{tabular}
+
+\emph{其他选项为用于绘制点的 \TIKZ\ 选项。}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnDefPointXY}{\oarg{选项}\parg{$x$,$y$}\marg{点名}}
+\emph{通过坐标系中的坐标定义点（等同于 \tkzcname{tkzDefPoint}）。}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnDrawPoints}{\oarg{选项}\parg{A,B,\dots}}
+\emph{绘制点；\tkzname{size} 选项设置半径，其他选项为 \TIKZ\ 选项。样式为 \tkzname{tkzfn point}，替代 \tkzcname{tkzSetUpPoint}：}
+
+|\tikzset{tkzfn point/.style={draw=black,fill=yellow}}|
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnLabelPoints}{\oarg{选项}\parg{A,B,\dots}}
+\emph{标注点的名称；\tkzcname{tkzFnLabelPoint}\texttt{[选项](A)\{文字\}} 标注任意文字。默认位置：\tkzname{above right}（右上）。}
+\end{NewMacroBox}
+
+\subsection{示例}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.25]
+  \tkzFnInit[xmin=-2,xmax=2,xstep=1,
+             ymin=-8,ymax=24,ystep=8]
+  \tkzFnGrid  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=-1.5:1]{3-1.3125*x^5-2.5*x^3}
+  \tkzFnDefPoint(f,.5){A}  \tkzFnDrawPoints(A)
+  \tkzFnLabelPoint[above right](A){$A_0$}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\subsection{选项 \tkzname{draw}}
+点被定义的同时绘制出来。
+
+\begin{tkzexample}[latex=7cm,small]
+\begin{tikzpicture}[scale=1.25]
+  \tkzFnInit[xmin=-2,xmax=2,xstep=1,
+             ymin=-8,ymax=24,ystep=8]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=-1.5:1]
+            {3-1.3125*x^5-2.5*x^3}
+  \tkzFnDefPoint[draw,red,size=2pt](f,.5){A}
+  \tkzFnLabelPoint[above right](A){$a$}
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+\subsection{不画曲线而画点：\tkzcname{tkzFnMarkPoints}}
+
+使用 \tkzname{tkz-fct} 时，必须用 \tkzname{fp} 语法定义宏 \tkzcname{tkzFctLast}。现在只需定义函数而不绘制即可。
+
+\begin{NewMacroBox}{tkzFnMarkPoints}{\oarg{选项}\parg{函数名}\marg{$x$ 值列表}}
+\emph{绘制给定 $x$ 值处的图像点；列表写法与 \tkzcname{foreach} 相同：\texttt{-1.5,-1.4,...,1}。这些点没有名称。}
+\end{NewMacroBox}
+
+\begin{tkzexample}[]
+\begin{tikzpicture}[xscale=3,yscale=2]
+  \tkzFnInit[xmin=-2,xmax=2,xstep=1,
+             ymin=-8,ymax=24,ystep=8]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDef{f}{3-1.3125*x^5-2.5*x^3}
+  \tkzFnMarkPoints(f){-1.5,-1.4,...,1}
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+\subsection{无需关心坐标的点}
+
+定义域从 0 到 800，函数值从 $0$ 到 $\tkzFnPrint{2000}$。$x$ 值以坐标系单位给出。
+
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=1.6]
+  \tkzFnInit[xmin  = 0,  xmax  = 800,
+             ymin  = 0,  ymax  = 2000,
+             xstep = 100,ystep = 400]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name   = f,
+             color  = blue,
+             domain = 0:800]
+        {(1/90000)*x^3-(1/100)*x^2+(113/36)*x}
+  \tkzFnMarkPoints(f){0,450,800}
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+\subsection{两个函数的点}
+
+每个函数都有名称：不再有 \tkzname{with} 选项。
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=4]
+  \tkzFnInit[xmin=0,xmax=3,ymin=0,ymax=2]
+  \tkzFnAxes
+  \tkzFnGrid(0,0)(3,2)
+  \tkzFnDraw[name=f,color=red,domain=1/3:3]
+            {0.125*(3*x-1)+0.375*(3*x-1)/(x*x)}
+  \tkzFnDraw[name=g,color=green,domain=1/3:3]{0.125*(3*x-1)}
+  \tikzset{tkzfn point/.style={draw=black,fill=lightgray}}
+  \tkzFnMarkPoints[size=2pt](f){1,2,3}
+  \tkzFnMarkPoints[size=2pt](g){1/3,3}
+  \tkzFnText[draw,color=red,fill=red!20](1,1.5)
+          {$f(x)=\frac{1}{8}(3x-1)+\frac{3}{8}
+           \left(\frac{3x-1}{x^2}\right)$}
+  \tkzFnText[draw,color=green!50!black,fill=green!20]
+               (2,0.3){$g(x)=\frac{1}{8}(3x-1)$}
+\end{tikzpicture}
+\end{tkzexample}
+
+\subsection{点的坐标：\tkzcname{tkzFnShowCoord} 和 \tkzcname{tkzFnPrintCoord}}
+
+\begin{NewMacroBox}{tkzFnShowCoord}{\oarg{选项}\parg{A}}
+\emph{从该点向坐标轴绘制垂线段并标注坐标（美式或法式格式）。\tkzname{xlabel} 和 \tkzname{ylabel} 选项替换计算值；设置 \tkzname{xlabel=false} 则不标注。样式为 \tkzname{tkzfn show coord}。}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnPrintCoord}{\oarg{小数位数}\parg{A}}
+\emph{在正文中写出该点的坐标。}
+\end{NewMacroBox}
+
+\begin{tkzexample}[latex=7cm]
+\begin{tikzpicture}[scale=1.2]
+  \tkzFnInit[xmin=0,xmax=3,ymin=0,ymax=4]
+  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=0:2.5]{x^2/2+1}
+  \tkzFnDefPoint[draw](f,1.5){A}
+  \tkzFnShowCoord(A)
+  \tkzFnDefPoint[draw](f,2){B}
+  \tkzFnShowCoord[xlabel=$b$,
+                  ylabel=$f(b)$](B)
+\end{tikzpicture}
+
+$A\tkzFnPrintCoord(A)$
+\end{tkzexample}
+
+\endinput

@@ -1,0 +1,50 @@
+\section{Overview}
+
+\subsection{Why a new package?}
+
+\tkzname{tkz-fct} delegated the computation of the points of the curves to \tkzname{gnuplot}, and the computation of values and slopes to \tkzname{fp.sty}. You had to install \tkzname{gnuplot}, allow \tkzname{shell-escape}, write each function with two syntaxes and often rewrite polynomials in \tkzimp{Horner} form to avoid the overflows of \tkzname{fp}.
+
+\tkzname{tkz-fn} replaces all this with \tkzname{Lua}, which is part of \tkzname{LuaLaTeX}:
+\begin{itemize}
+  \item the points of the curves, the values, the derivatives and the areas are computed by Lua in double precision;
+  \item a function is defined only once, with the syntax of Lua (|x^2|, |sin(x)|, |exp(x)|);
+  \item no \tkzname{gnuplot}, no \tkzname{shell-escape}, no auxiliary file;
+  \item \tkzname{tkz-fn} depends only on \TIKZ; it uses neither \tkzname{tkz-base} nor \tkzname{tkz-euclide};
+  \item numerical results are written in the American or in the French way;
+  \item the axes can be drawn as in school textbooks, with arrows at one or both ends, or as a ``box'' as with \tkzname{pgfplots};
+  \item a bridge makes the points defined by \tkzname{tkz-fn} available to \tkzname{tkz-elements}.
+\end{itemize}
+
+All the macros begin with \tkzname{\textbackslash tkzFn}, so there is no conflict with \tkzname{tkz-fct}, \tkzname{tkz-base} or \tkzname{tkz-euclide}.
+
+\subsection{Two coordinate spaces}
+
+A coordinate system is defined with \tkzcname{tkzFnInit}, using the options \tkzname{xmin}, \tkzname{xmax}, \tkzname{xstep}, \tkzname{ymin}, \tkzname{ymax} and \tkzname{ystep}. \tkzname{xstep} is the value represented by one centimeter on the $x$-axis, \tkzname{ystep} the value represented by one centimeter on the $y$-axis.
+
+\begin{itemize}
+  \item Every computation is done in the units of the coordinate system: $f(x)$, the slope of a tangent line, an area, a Riemann sum, the coordinates of a point.
+  \item The drawing is done in centimeters. The conversion happens at the last moment:
+  \[ X = \frac{x}{\text{xstep}} \qquad Y = \frac{y}{\text{ystep}} \]
+\end{itemize}
+
+So you no longer write |\x| instead of |x| when \tkzname{xstep} is not 1. For example, let us draw the graph of the function $f$ defined by:
+
+\[
+ 0\leq x\leq 100 \ \text{and}\ f(x)=x^3
+\]
+
+The values of $f(x)$ lie between 0 and $\tkzFnPrint{1000000}$. With \tkzname{xstep=10} and \tkzname{ystep=100000}, the axes are about $10$ cm long (without scaling).
+
+\begin{tkzexample}[latex=10cm,small]
+\begin{tikzpicture}[scale=.5]
+  \tkzFnInit[xmax=100,xstep=10,
+             ymin=0,ymax=1000000,
+             ystep=100000,xmin=0]
+  \tkzFnGrid
+  \tkzFnAxes[decimals=0]
+  \tkzFnDraw[color=red,
+             domain=0:100]{x^3}
+\end{tikzpicture}
+\end{tkzexample}
+
+\endinput

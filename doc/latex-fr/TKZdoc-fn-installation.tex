@@ -1,0 +1,58 @@
+\section{Installation et compilation}
+
+\subsection{Les fichiers}
+
+Le package est formé de deux fichiers :
+\begin{itemize}
+  \item \tkzname{tkz-fn.sty} : l'interface \LaTeX{} (les macros et leurs options) ;
+  \item \tkzname{tkz\_fn.lua} : le code Lua (les calculs et le code \TIKZ\ produit).
+\end{itemize}
+
+Les deux fichiers doivent être placés dans un dossier connu de \TeX{}, par exemple \tkzname{texmf/tex/latex/tkz-fn}, ou bien dans le dossier du document.
+
+\subsection{Chargement}
+
+\begin{tkzltxexample}[]
+\usepackage{tkz-fn}         % format selon la langue de babel
+\usepackage[fr]{tkz-fn}     % résultats sous la forme française
+\usepackage[us]{tkz-fn}     % résultats sous la forme américaine
+\end{tkzltxexample}
+
+\TIKZ\ est chargé automatiquement. Certaines options de \TIKZ\ utilisées dans les exemples demandent des bibliothèques : |\usetikzlibrary{arrows,patterns}|.
+
+\subsection{Compilation}
+
+Le document doit être compilé avec \tkzname{LuaLaTeX}. L'option \tkzname{shell-escape} n'est pas nécessaire et aucun fichier auxiliaire n'est créé.
+
+\subsection{Écriture des fonctions}
+
+Les expressions sont des expressions Lua. La variable est |x| pour une fonction, |t| pour une courbe paramétrée ou polaire.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Lua & ancienne syntaxe (gnuplot) & description \\
+\midrule
+|x^3|, |x^0.5| & |x**3|, |x**0.5| & puissance \\
+|1/3| & |1./3| & quotient (toujours décimal) \\
+|ln(x)| ou |log(x)| & |log(x)| & logarithme népérien \\
+|log10(x)| & |log10(x)| & logarithme décimal \\
+|exp(x)|, |e| & |exp(x)|, |exp(1)| & exponentielle, nombre $\text{e}$ \\
+|sqrt(x)|, |abs(x)| & |sqrt(x)|, |abs(x)| & racine carrée, valeur absolue \\
+|sin|, |cos|, |tan| & idem & radians \\
+|asin|, |acos|, |atan| & idem & fonctions réciproques \\
+|sinh|, |cosh|, |tanh| & idem & fonctions hyperboliques \\
+|pi| & |pi| & $\pi$ \\
+|floor|, |ceil|, |sign|, |mod(a,b)| & |floor|, |ceil|, |sgn|, |%| & \\
+|cbrt(x)|, |root(x,n)| & & racine cubique, racine $n$-ième \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\tkzHand Une fonction définie par \tkzcname{tkzFnDef} peut être utilisée dans une autre expression : |2*f(x)+1|. Une variable globale de Lua peut servir de paramètre : |\directlua{a = 0.5}| puis |a*x^2|.
+
+\tkzHand Les fonctions |diff(f,x)|, |integral(f,a,b)| et |riemann(f,a,b,n,"left")| donnent la dérivée en un point, l'intégrale (méthode de Simpson) et une somme de Riemann. On les utilise avec \tkzcname{tkzFnPrint}.
+
+\tkzBomb Un argument placé entre parenthèses ne doit pas contenir de parenthèse fermante non protégée : on écrit |(f,{1/exp(1)})| et non |(f,1/exp(1))|.
+
+\endinput

@@ -1,0 +1,125 @@
+\section{若干示例}
+
+\subsection{\TIKZ\ 与 \tkzname{tkz-fn}}
+
+\TIKZ\ 代码和 \tkzname{tkz-fn} 代码可以混用。此处区域用 \TIKZ\ 渐变填充；积分值由 Lua 计算。
+
+\begin{center}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=3]
+  \tkzFnInit[xmin=0,xmax=4,ymin=-1.5,ymax=1.5]
+  \tkzFnAxisY
+  \tkzFnDef{f}{ln(x)}
+  \tkzFnArea[fill=none,top color=gray!80,bottom color=gray!20,
+             domain=1:e](f)
+  \tkzFnDraw[color=blue,domain=0.2:4](f)
+  \tkzFnAxisX
+  \tkzFnText[draw,color=black,fill=brown!50](2,-1)
+    {$\mathcal{A} = \int_1^{\text{e}}\ln(x)\,\text{d}x =
+     \big[x\ln(x)-x\big]_{1}^{\text{e}} = 1$}
+  \tkzFnText[draw,color=black,fill=brown!50](2,0.3)
+    {$\mathcal{A}\approx\tkzFnPrint[6]{integral(f,1,e)}$}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{\tkzname{洛伦兹}曲线}
+
+$f(x)=\dfrac{\text{e}^x-1}{\text{e}-1}$，$g(x)=x^3$
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1]
+  \tkzFnInit[xmin=0,xmax=1,ymin=0,ymax=1,xstep=0.1,ystep=0.1]
+  \tkzFnGrid(0,0)(1,1)
+  \tkzFnAxes
+  \tkzFnDef{f}{(exp(x)-1)/(exp(1)-1)}
+  \tkzFnDef{g}{x^3}
+  \tkzFnDef{h}{x}
+  \tkzFnArea[fill=blue!40,domain=0:1](h,g)
+  \tkzFnArea[fill=red!60,domain=0:1](h,f)
+  \tkzFnDraw[color=red](f)
+  \tkzFnTangent[kl=0,kr=0.4,color=red](f,0)
+  \tkzFnTangent[kl=0.2,kr=0,color=red](f,1)
+  \tkzFnText[draw,color=red,fill=brown!30](0.4,0.6)
+          {$f(x)=\dfrac{\text{e}^x-1}{\text{e}-1}$}
+  \tkzFnDraw[color=blue](g)
+  \tkzFnTangent[kl=0,kr=0.4,color=blue](g,0)
+  \tkzFnTangent[kl=0.2,kr=0,color=blue](g,1)
+  \tkzFnText[draw,color=blue,fill=brown!30](0.8,0.1){$g(x)=x^3$}
+  \tkzFnDraw[color=orange,dashed](h)
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{指数曲线}
+   $f(x) = (-x^2+x+2)\text{e}^x$
+
+\begin{center}
+\begin{tkzexample}[small]
+\begin{tikzpicture}[scale=1.25]
+   \tkzFnInit[xmin=-6,xmax=4,ymin=-5,ymax=6]
+   \tkzFnGrid
+   \tkzFnAxes
+   \tkzFnDraw[name=f,color=red,thick,domain=-6:2.1785]{(-x*x+x+2)*exp(x)}
+   \tkzFnTangent[draw,kl=2](f,0)
+   \tkzFnDefPointXY[draw,size=3pt](2,0){b}
+   \tkzFnDefPointXY[draw,size=3pt](-1,0){c}
+   \tkzFnText(2,4){($\mathcal{C}$)}
+   \tkzFnText(-2,-3){($\mathcal{T}$)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\subsection{对数坐标轴}
+此处坐标系仅用于放置直线；标签用 \TIKZ\ 写出。
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=0.8]
+ \tkzFnInit[xmin=0,xmax=14,ymin=0,ymax=12]
+ \draw[thin,->] (0,0) -- (14,0);
+ \draw[thin,->] (0,0) -- (0,12);
+ \foreach \x/\xtext in {0/0,2/10,4/20,6/30,8/40,10/50,12/60,14/70}
+     {\draw[shift={(\x,0)}] node[below] {$\xtext$};}
+ \foreach \y/\z in {0/0,3/1,6/2,9/3,12/4}
+     {\draw[shift={(0,\y)}] node[left] {$10^{\z}$};}
+ \tkzFnVLines[gray,thin]{1,2,...,14}
+ \tkzFnHLines[gray,thin]{3,6,...,12}
+ \foreach \y in {0,3,...,9}{
+   \tkzFnHLines[thin,gray!60]{\y+3*log10(2),\y+3*log10(3),\y+3*log10(4),
+     \y+3*log10(5),\y+3*log10(6),\y+3*log10(7),\y+3*log10(8),\y+3*log10(9)}}
+ \tkzFnDefPointXY(0,6.90){a}
+ \tkzFnDefPointXY(10,9.30){b}
+ \tkzFnDrawPoints(a,b)
+ \tkzFnLabelPoint(a){$M_{1}$}
+ \tkzFnLabelPoint(b){$M_{11}$}
+\end{tikzpicture}
+\end{tkzexample}
+
+使用 \tkzname{tkz-fct} 时用到的 |0.903|、|1.431| 等值，现在替换为表达式：$3\log 2\approx\tkzFnPrint[3]{3*log10(2)}$。
+
+\newpage
+\subsection{综合示例}
+
+\begin{NewMacroBox}{tkzFnDrawData}{\oarg{\TIKZ\ 选项}\marg{$x_1$/$y_1$,$x_2$/$y_2$,\dots}}
+\emph{绘制由坐标系坐标给出的点（等同于 \tkzcname{tkzDefSetOfPoints} 和 \tkzcname{tkzDrawSetOfPoints}）。选项为 \TIKZ\ \texttt{plot} 的选项；默认：\texttt{only marks, mark=*}。}
+\end{NewMacroBox}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=.8]
+ \tkzFnInit[xmin=5,xmax=40,ymin=0,ymax=350,xstep=2.5,ystep=25]
+ \tkzFnGrid[color=orange]
+ \tkzFnAxes[xlabel=$q$,ylabel=$C(q)$,dx=5,dy=50]
+ \tkzFnDraw[name=C,domain=5:40]{0.1*x^2+2*x+60}
+ \tkzFnMarkPoints(C){5,10,...,40}
+ \tkzFnDraw[domain=5:40]{108*ln(x)-158}
+ \tkzFnText(37.5,285){$C$}
+ \tkzFnText(37.5,220){$R$}
+ \tkzFnDrawData[mark=x,mark size=3pt]
+   {5/15,10/90,15/135,20/170,25/190,30/200,35/230,40/240}
+\end{tikzpicture}
+\end{tkzexample}
+
+\endinput

@@ -1,0 +1,35 @@
+\section{Nommer les courbes}
+
+Ce qui est souhaitable, c'est de pouvoir nommer les courbes. Prenons comme exemple, la fonction $f$ définie par :
+
+\[
+   x>0\ \text{et}\ f(x)=\dfrac{x^2+x-1}{x^3}
+\]
+
+Il est aisé de mettre un titre en utilisant la macro \tkzcname{tkzFnText}. Les coordonnées utilisées font référence aux unités des axes du repère. Pour placer un texte le long de la courbe, le plus simple est de définir un point de la courbe, puis d'utiliser son nom.
+
+\begin{tkzltxexample}[num]
+  \tkzFnDefPoint(f,3){P}
+  \tkzFnText[above right](P){${\mathcal{C}}_f$}
+\end{tkzltxexample}
+
+La première ligne définit le point $P$ de la courbe d'abscisse $3$. La seconde place le texte au point $P$. Les options de \TIKZ\ permettent d'affiner le résultat.
+
+\subsection{Ajouter un label}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}
+  \tkzFnInit[xmin=0,xmax=10,
+             ymin=0,ymax=1.2,ystep=0.2]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,thick,color=red,domain=0.55:10]{(x*x+x-1)/x^3}
+  \tkzFnText(3,-0.3){\textbf{Courbe de} $\mathbf{f}$}
+  \tkzFnDefPoint(f,3){P}
+  \tkzFnText[above right,text=red](P){${\mathcal{C}}_f$}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\endinput

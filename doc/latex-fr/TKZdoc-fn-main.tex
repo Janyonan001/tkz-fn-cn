@@ -1,0 +1,169 @@
+% !TEX TS-program = lualatex
+% Copyright (C)  2026 Alain Matthes
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% This work has the LPPL maintenance status `maintained'.
+% The Current Maintainer of this work is Alain Matthes
+
+% TKZdoc-fn-main : documentation (en français) de tkz-fn.
+
+\documentclass[DIV         = 14,
+               fontsize    = 10,
+               index       = totoc,
+               twoside,
+               headings    = small
+               ]{tkz-doc}
+\usepackage{etoc}
+\gdef\tkznameofpack{tkz-fn}
+\gdef\tkzversionofpack{1.00c}
+\gdef\tkzdateofpack{2026/10/19}
+\gdef\tkznameofdoc{doc-tkz-fn}
+\gdef\tkzdateofdoc{2026/10/19}
+\gdef\tkzversionofdoc{1.00c}
+\gdef\tkzauthorofpack{Alain Matthes}
+\gdef\tkzadressofauthor{}
+\gdef\tkznamecollection{AlterMundus}
+\gdef\tkzurlauthor{http://altermundus.fr}
+\gdef\tkzurlauthorcom{http://altermundus.fr}
+\gdef\tkzengine{lualatex}
+\usepackage{tkz-tab,alterqcm}
+\usepackage{tkz-fn}
+\usetikzlibrary{arrows,patterns,shapes.geometric}
+\usepackage[colorlinks]{hyperref}
+\hypersetup{
+      linkcolor=Gray,
+      citecolor=Green,
+      filecolor=Mulberry,
+      urlcolor=NavyBlue,
+      menucolor=Gray,
+      runcolor=Mulberry,
+      linkbordercolor=Gray,
+      citebordercolor=Green,
+      filebordercolor=Mulberry,
+      urlbordercolor=NavyBlue,
+      menubordercolor=Gray,
+      runbordercolor=Mulberry,
+      pdfsubject={Graph function with Lua},
+      pdfauthor={\tkzauthorofpack},
+      pdftitle={\tkznameofpack},
+      pdfkeywords={tikz, pgf, lua, lualatex, graphic, maths, graph,
+      function, tangent, area},
+      pdfcreator={\tkzengine}
+}
+\usepackage{url}
+\def\UrlFont{\small\ttfamily}
+
+\usepackage{fontspec}
+\setmainfont{texgyrepagella}[
+  Extension = .otf,
+  UprightFont = *-regular ,
+  ItalicFont  = *-italic  ,
+  BoldFont    = *-bold    ,
+  BoldItalicFont = *-bolditalic ,
+]
+\setsansfont{texgyreheros}[
+  Extension = .otf,
+  UprightFont = *-regular ,
+  ItalicFont  = *-italic  ,
+  BoldFont    = *-bold    ,
+  BoldItalicFont = *-bolditalic ,
+]
+\setmonofont{lmmono10-regular.otf}[
+  Numbers={Lining,SlashedZero},
+  ItalicFont=lmmonoslant10-regular.otf,
+  BoldFont=lmmonolt10-bold.otf,
+  BoldItalicFont=lmmonolt10-boldoblique.otf,
+]
+\newfontfamily\ttcondensed{lmmonoltcond10-regular.otf}
+\linespread{1.05}
+\usepackage{unicode-math}
+\usepackage{fourier-otf}
+\usepackage{tkzexample}
+\usepackage{rotating,fancyvrb}
+\usepackage[french]{babel}
+
+\usepackage{microtype}
+\usepackage[parfill]{parskip}
+\usepackage{array,multirow,booktabs}
+\usepackage{shortvrb}
+\AtBeginDocument{\MakeShortVerb{\|}}
+
+\RequirePackage{makeidx}
+\makeindex
+\colorlet{graphicbackground}{white}
+\colorlet{codebackground}{Gray!10}
+\def\blue{\color{blue}}
+\def\red{\color{red}}
+\begin{document}
+
+%<--------------------- Première page présentation  ------------------------–>
+\title{\tkznameofpack}
+\date{\today}
+\clearpage
+\thispagestyle{empty}
+\maketitle
+
+\clearpage
+
+\nameoffile{\tkznameofpack}
+
+\defoffile{\textbf{tkz-fn.sty (v\tkzversionofpack)} est un package pour créer, à l'aide de \TIKZ\ et de Lua, des représentations graphiques de fonctions en 2D le plus simplement possible. Il succède à \tkzname{tkz-fct} : \tkzname{gnuplot}, \tkzname{fp.sty} et \tkzname{tkz-base} ne sont plus nécessaires, tous les calculs sont faits par Lua et le document se compile avec \tkzname{LuaLaTeX}. Ce sont des représentations du type scolaire qui correspondent à l'enseignement proposé dans les lycées français.}
+
+\presentation
+
+\vspace*{24pt}
+\noindent\lefthand\ Je souhaite remercier \tkzimp{Till Tantau} pour avoir créé le merveilleux outil \tkzname{\TIKZ}, ainsi que \tkzimp{Michel Bovani} pour \tkzname{fourier}.
+
+\vspace*{12pt}
+\noindent\lefthand\ Je souhaite remercier aussi \tkzimp{David Arnold}, \tkzimp{Pablo González Luengo}, \tkzimp{Wolfgang Büchel}, \tkzimp{John Kitzmiller} et \tkzimp{Gaétan Marris} pour leur aide sur \tkzname{tkz-fct} ; les exemples de cette documentation en sont issus.
+
+\vspace*{12pt}
+\noindent\lefthand\ Vous trouverez de nombreux exemples sur mon site~:
+\href{http://altermundus.fr}{altermundus.fr}
+
+\vfill
+Vous pouvez envoyer vos remarques, et les rapports sur des erreurs que vous aurez constatées à l'adresse suivante~: \href{mailto:al.ma@mac.com}{\textcolor{blue}{Alain Matthes}}.
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3
+of this license or (at your option) any later version.
+%<--------------------------------------------------------------------------->
+
+\clearpage
+\tableofcontents
+
+\clearpage
+\newpage
+
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+%<---------------------------- the files ------------------------------------>
+\include{TKZdoc-fn-why}
+\include{TKZdoc-fn-installation}
+\include{TKZdoc-fn-frame}
+\include{TKZdoc-fn-fonctions}
+\include{TKZdoc-fn-point}
+\include{TKZdoc-fn-label}
+\include{TKZdoc-fn-tangent}
+\include{TKZdoc-fn-area}
+\include{TKZdoc-fn-riemann}
+\include{TKZdoc-fn-lines}
+\include{TKZdoc-fn-param}
+\include{TKZdoc-fn-polar}
+\include{TKZdoc-fn-symbol}
+\include{TKZdoc-fn-format}
+\include{TKZdoc-fn-elements}
+\include{TKZdoc-fn-example}
+\include{TKZdoc-fn-interpolation}
+\include{TKZdoc-fn-VDW}
+\include{TKZdoc-fn-bac}
+\include{TKZdoc-fn-fct}
+\include{TKZdoc-fn-liste}
+%<--------------------------------------------------------------------------->
+\clearpage\newpage
+\printindex
+\end{document}

@@ -1,0 +1,58 @@
+\section{Installation and compilation}
+
+\subsection{Files}
+
+The package consists of two files:
+\begin{itemize}
+  \item \tkzname{tkz-fn.sty}: the \LaTeX{} interface (macros and options);
+  \item \tkzname{tkz\_fn.lua}: the Lua code (computations and generated \TIKZ\ code).
+\end{itemize}
+
+Both files must be placed in a folder known to \TeX{}, for example \tkzname{texmf/tex/latex/tkz-fn}, or in the folder of the document.
+
+\subsection{Loading}
+
+\begin{tkzltxexample}[]
+\usepackage{tkz-fn}         % format according to the language of babel
+\usepackage[us]{tkz-fn}     % American format of the results
+\usepackage[fr]{tkz-fn}     % French format of the results
+\end{tkzltxexample}
+
+\TIKZ\ and its library \tkzname{plotmarks} are loaded automatically. Some \TIKZ\ options used in the examples need other libraries: |\usetikzlibrary{arrows,patterns}|.
+
+\subsection{Compilation}
+
+The document must be compiled with \tkzname{LuaLaTeX}. The \tkzname{shell-escape} option is not needed and no auxiliary file is created.
+
+\subsection{Writing functions}
+
+Expressions are Lua expressions. The variable is |x| for a function, |t| for a parametric or a polar curve.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Lua & old syntax (gnuplot) & description \\
+\midrule
+|x^3|, |x^0.5| & |x**3|, |x**0.5| & power \\
+|1/3| & |1./3| & quotient (always decimal) \\
+|ln(x)| or |log(x)| & |log(x)| & natural logarithm \\
+|log10(x)| & |log10(x)| & common logarithm \\
+|exp(x)|, |e| & |exp(x)|, |exp(1)| & exponential, number $\text{e}$ \\
+|sqrt(x)|, |abs(x)| & |sqrt(x)|, |abs(x)| & square root, absolute value \\
+|sin|, |cos|, |tan| & same & radians \\
+|asin|, |acos|, |atan| & same & inverse functions \\
+|sinh|, |cosh|, |tanh| & same & hyperbolic functions \\
+|pi| & |pi| & $\pi$ \\
+|floor|, |ceil|, |sign|, |mod(a,b)| & |floor|, |ceil|, |sgn|, |%| & \\
+|cbrt(x)|, |root(x,n)| & & cube root, $n$-th root \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\tkzHand A function defined with \tkzcname{tkzFnDef} can be used in another expression: |2*f(x)+1|. A global Lua variable can be used as a parameter: |\directlua{a = 0.5}| then |a*x^2|.
+
+\tkzHand The functions |diff(f,x)|, |integral(f,a,b)| and |riemann(f,a,b,n,"left")| give the derivative at a point, the integral (Simpson's rule) and a Riemann sum. They are used with \tkzcname{tkzFnPrint}.
+
+\tkzBomb An argument between parentheses must not contain an unprotected closing parenthesis: write |(f,{1/exp(1)})|, not |(f,1/exp(1))|.
+
+\endinput

@@ -1,0 +1,188 @@
+% !TEX TS-program = lualatex
+% Copyright (C)  2026 Alain Matthes
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% This work has the LPPL maintenance status `maintained'.
+% The Current Maintainer of this work is Alain Matthes
+
+% TKZdoc-fn-main : 中文文档 tkz-fn.
+
+\documentclass[DIV         = 14,
+               fontsize    = 10,
+               index       = totoc,
+               twoside,
+               headings    = small
+               ]{tkz-doc}
+\usepackage{etoc}
+\gdef\tkznameofpack{tkz-fn}
+\gdef\tkzversionofpack{1.00c}
+\gdef\tkzdateofpack{2026/10/19}
+\gdef\tkznameofdoc{doc-tkz-fn}
+\gdef\tkzdateofdoc{2026/10/19}
+\gdef\tkzversionofdoc{1.00c}
+\gdef\tkzauthorofpack{Alain Matthes}
+\gdef\tkzadressofauthor{}
+\gdef\tkznamecollection{AlterMundus}
+\gdef\tkzurlauthor{http://altermundus.fr}
+\gdef\tkzurlauthorcom{http://altermundus.fr}
+\gdef\tkzengine{lualatex}
+\usepackage{tkz-tab}
+\usepackage[english]{alterqcm}
+\usepackage{tkz-fn}
+\usetikzlibrary{arrows,patterns,shapes.geometric}
+\usepackage[colorlinks]{hyperref}
+\hypersetup{
+      linkcolor=Gray,
+      citecolor=Green,
+      filecolor=Mulberry,
+      urlcolor=NavyBlue,
+      menucolor=Gray,
+      runcolor=Mulberry,
+      linkbordercolor=Gray,
+      citebordercolor=Green,
+      filebordercolor=Mulberry,
+      urlbordercolor=NavyBlue,
+      menubordercolor=Gray,
+      runbordercolor=Mulberry,
+      pdfsubject={用 Lua 绘制函数图像},
+      pdfauthor={\tkzauthorofpack},
+      pdftitle={\tkznameofpack},
+      pdfkeywords={tikz, pgf, lua, lualatex, graphic, maths, graph,
+      function, tangent, area},
+      pdfcreator={\tkzengine}
+}
+\usepackage{url}
+\def\UrlFont{\small\ttfamily}
+
+\usepackage{fontspec}
+\setmainfont{texgyrepagella}[
+  Extension = .otf,
+  UprightFont = *-regular ,
+  ItalicFont  = *-italic  ,
+  BoldFont    = *-bold    ,
+  BoldItalicFont = *-bolditalic ,
+]
+\setsansfont{texgyreheros}[
+  Extension = .otf,
+  UprightFont = *-regular ,
+  ItalicFont  = *-italic  ,
+  BoldFont    = *-bold    ,
+  BoldItalicFont = *-bolditalic ,
+]
+\setmonofont{lmmono10-regular.otf}[
+  Numbers={Lining,SlashedZero},
+  ItalicFont=lmmonoslant10-regular.otf,
+  BoldFont=lmmonolt10-bold.otf,
+  BoldItalicFont=lmmonolt10-boldoblique.otf,
+]
+\newfontfamily\ttcondensed{lmmonoltcond10-regular.otf}
+\linespread{1.05}
+\usepackage{unicode-math}
+\usepackage{fourier-otf}
+\usepackage{tkzexample}
+\usepackage{rotating,fancyvrb}
+
+% 中文支持
+\usepackage{luatexja}
+\usepackage{luatexja-fontspec}
+\setmainjfont{Source Han Serif SC}[
+  Language = Chinese Simplified,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+  ItalicFont = *-Regular,
+  BoldItalicFont = *-Bold,
+]
+\setsansjfont{Source Han Sans SC}[
+  Language = Chinese Simplified,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+]
+\setmonojfont{Source Han Serif SC}[
+  Language = Chinese Simplified,
+  UprightFont = *-Regular,
+  BoldFont = *-Bold,
+]
+
+\usepackage{microtype}
+\usepackage[parfill]{parskip}
+\usepackage{array,multirow,booktabs}
+\usepackage{shortvrb}
+\AtBeginDocument{\MakeShortVerb{\|}}
+
+\RequirePackage{makeidx}
+\makeindex
+\colorlet{graphicbackground}{white}
+\colorlet{codebackground}{Gray!10}
+\def\blue{\color{blue}}
+\def\red{\color{red}}
+\begin{document}
+
+%<--------------------- 首页介绍  ------------------------–>
+\title{\tkznameofpack}
+\date{\today}
+\clearpage
+\thispagestyle{empty}
+\maketitle
+
+\clearpage
+
+\nameoffile{\tkznameofpack}
+
+\defoffile{\textbf{tkz-fn.sty (v\tkzversionofpack)} 是一个用于二维函数图像绘制的宏包，借助 \TIKZ\ 和 Lua 尽可能简化绘图过程。它是 \tkzname{tkz-fct} 的继任者：不再需要 \tkzname{gnuplot}、\tkzname{fp.sty} 和 \tkzname{tkz-base}，所有计算均由 Lua 完成，文档使用 \tkzname{LuaLaTeX} 编译。所绘图形适用于中学数学教学；表示方式（美式或法式惯例、类似 \tkzname{pgfplots} 的"矩形框"坐标轴）可通过选项选择。}
+
+\presentation
+
+\vspace*{24pt}
+\noindent\lefthand\ 感谢 \tkzimp{Till Tantau} 开发了出色的工具 \tkzname{\TIKZ}，感谢 \tkzimp{Michel Bovani} 提供 \tkzname{fourier} 字体。
+
+\vspace*{12pt}
+\noindent\lefthand\ 同时感谢 \tkzimp{David Arnold}、\tkzimp{Pablo González Luengo}、\tkzimp{Wolfgang Büchel}、\tkzimp{John Kitzmiller} 和 \tkzimp{Gaétan Marris} 在 \tkzname{tkz-fct} 开发中给予的帮助；本文档中的示例均源自该宏包。
+
+\vspace*{12pt}
+\noindent\lefthand\ 您可以在我的网站上找到更多示例：
+\href{http://altermundus.fr}{altermundus.fr}
+
+\vfill
+欢迎将意见和 bug 报告发送至：\href{mailto:al.ma@mac.com}{\textcolor{blue}{Alain Matthes}}。
+
+本作品可在 LaTeX 项目公共许可证（版本 1.3 或更高版本）的条款下分发和/或修改。
+%<--------------------------------------------------------------------------->
+
+\clearpage
+\tableofcontents
+
+\clearpage
+\newpage
+
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+%<---------------------------- 各章节文件 ------------------------------------>
+\include{TKZdoc-fn-why}
+\include{TKZdoc-fn-installation}
+\include{TKZdoc-fn-frame}
+\include{TKZdoc-fn-fonctions}
+\include{TKZdoc-fn-point}
+\include{TKZdoc-fn-label}
+\include{TKZdoc-fn-tangent}
+\include{TKZdoc-fn-area}
+\include{TKZdoc-fn-riemann}
+\include{TKZdoc-fn-lines}
+\include{TKZdoc-fn-param}
+\include{TKZdoc-fn-polar}
+\include{TKZdoc-fn-symbol}
+\include{TKZdoc-fn-format}
+\include{TKZdoc-fn-elements}
+\include{TKZdoc-fn-example}
+\include{TKZdoc-fn-interpolation}
+\include{TKZdoc-fn-VDW}
+\include{TKZdoc-fn-bac}
+\include{TKZdoc-fn-fct}
+\include{TKZdoc-fn-liste}
+%<--------------------------------------------------------------------------->
+\clearpage\newpage
+\printindex
+\end{document}

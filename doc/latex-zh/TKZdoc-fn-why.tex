@@ -1,0 +1,50 @@
+\section{概述}
+
+\subsection{为什么要开发新宏包？}
+
+\tkzname{tkz-fct} 将曲线点的计算委托给 \tkzname{gnuplot}，将函数值和斜率的计算委托给 \tkzname{fp.sty}。用户必须安装 \tkzname{gnuplot}、启用 \tkzname{shell-escape}、用两种语法分别书写每个函数，并且经常需要将多项式改写成 \tkzimp{Horner} 形式以避免 \tkzname{fp} 的溢出问题。
+
+\tkzname{tkz-fn} 用 \tkzname{Lua}（\tkzname{LuaLaTeX} 的组成部分）取代了这一切：
+\begin{itemize}
+  \item 曲线点、函数值、导数和面积均由 Lua 以双精度计算；
+  \item 函数只需定义一次，使用 Lua 语法（|x^2|、|sin(x)|、|exp(x)|）；
+  \item 无需 \tkzname{gnuplot}、无需 \tkzname{shell-escape}、无需辅助文件；
+  \item \tkzname{tkz-fn} 仅依赖 \TIKZ；既不使用 \tkzname{tkz-base}，也不使用 \tkzname{tkz-euclide}；
+  \item 数值结果可按美式或法式格式书写；
+  \item 坐标轴可绘制为教材样式，一端或两端带箭头，也可绘制为类似 \tkzname{pgfplots} 的"矩形框"样式；
+  \item 提供桥接功能，使 \tkzname{tkz-fn} 定义的点可供 \tkzname{tkz-elements} 使用。
+\end{itemize}
+
+所有宏均以 \tkzname{\textbackslash tkzFn} 开头，因此与 \tkzname{tkz-fct}、\tkzname{tkz-base} 或 \tkzname{tkz-euclide} 不会发生冲突。
+
+\subsection{两个坐标空间}
+
+坐标系通过 \tkzcname{tkzFnInit} 定义，使用选项 \tkzname{xmin}、\tkzname{xmax}、\tkzname{xstep}、\tkzname{ymin}、\tkzname{ymax} 和 \tkzname{ystep}。\tkzname{xstep} 表示 $x$ 轴上 1 厘米所代表的值，\tkzname{ystep} 表示 $y$ 轴上 1 厘米所代表的值。
+
+\begin{itemize}
+  \item 所有计算均在坐标系单位下进行：$f(x)$、切线斜率、面积、黎曼和、点的坐标。
+  \item 绘图以厘米为单位。转换在最后一刻进行：
+  \[ X = \frac{x}{\text{xstep}} \qquad Y = \frac{y}{\text{ystep}} \]
+\end{itemize}
+
+因此当 \tkzname{xstep} 不为 1 时，您不再需要用 |\x| 代替 |x|。例如，绘制由下式定义的函数 $f$ 的图像：
+
+\[
+  0\leq x\leq 100 \ \text{且}\ f(x)=x^3
+\]
+
+$f(x)$ 的值在 0 到 $\tkzFnPrint{1000000}$ 之间。取 \tkzname{xstep=10} 和 \tkzname{ystep=100000}，坐标轴长度约为 $10$ 厘米（无需缩放）。
+
+\begin{tkzexample}[latex=10cm,small]
+\begin{tikzpicture}[scale=.5]
+  \tkzFnInit[xmax=100,xstep=10,
+             ymin=0,ymax=1000000,
+             ystep=100000,xmin=0]
+  \tkzFnGrid
+  \tkzFnAxes[decimals=0]
+  \tkzFnDraw[color=red,
+             domain=0:100]{x^3}
+\end{tikzpicture}
+\end{tkzexample}
+
+\endinput

@@ -1,0 +1,189 @@
+\section{面积}
+
+目标是展示函数图像、$x$ 轴以及直线 $x=a$ 和 $x=b$ 之间的区域，或两条图像之间的区域。
+
+\subsection{绘制面积：\tkzcname{tkzFnArea}}
+
+\begin{NewMacroBox}{tkzFnArea}{\oarg{选项}\parg{f} \textrm{或} \oarg{选项}\parg{f,g}}
+\emph{一个参数时，区域位于 $f$ 的图像与 $x$ 轴之间。两个参数时，区域位于 $f$ 和 $g$ 的图像之间；$g$ 可以是一个数值：\texttt{(f,12)}。}
+
+\begin{tabular}{lll}
+\toprule
+选项             & 默认值 & 说明                         \\
+\midrule
+\TOline{domain}{xmin:xmax}{区间 $[a, b]$}
+\TOline{where}{both}{\texttt{above}：仅在 $f\geq g$ 处；\texttt{below}：在 $f\leq g$ 处}
+\TOline{samples}{200}{点数}
+\TOline{clip}{true}{区域裁剪到窗口内}
+\bottomrule
+\end{tabular}
+
+\emph{其他选项为 \TIKZ\ 选项（\tkzname{fill}、\tkzname{pattern}、\tkzname{opacity} 等）；样式为 \tkzname{tkzfn area}。}
+\end{NewMacroBox}
+
+\tkzHand 函数无需绘制；绘制顺序（在面积之前还是之后）决定了什么在前景。
+
+\subsection{自然对数的诞生}
+
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=2]
+ \tkzFnInit[xmin=0,xmax=3,xstep=1,
+            ymin=-2,ymax=2,ystep=1]
+ \tkzFnGrid
+ \tkzFnAxes
+ \tkzFnDraw[name=f,domain=0.4:3]{1/x}
+ \tkzFnDefPoint(f,1){A}
+ \tkzFnDefPoint(f,2){B}
+ \tkzFnLabelPoints[above right](A,B)
+ \tkzFnArea[fill=blue!30,domain=1:2](f)
+ \tkzFnDraw[name=g,domain=0.5:3]{ln(x)}
+ \tkzFnArea[fill=red!30,domain=1:2](g)
+ \tkzFnShowCoord(A)
+ \tkzFnShowCoord(B)
+ \tkzFnDrawPoints(A,B)
+\end{tikzpicture}
+\end{tkzexample}
+
+两块面积分别为 $\ln 2\approx\tkzFnPrint[4]{integral(f,1,2)}$ 和 $2\ln 2-1\approx\tkzFnPrint[4]{integral(g,1,2)}$：|\tkzFnPrint[4]{integral(f,1,2)}|。
+
+\subsection{简单面积}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=1.75]
+ \tkzFnInit[xmin=0,xmax=800,xstep=100,
+            ymin=0,ymax=2000,ystep=400]
+ \tkzFnGrid
+ \tkzFnAxes
+ \tkzFnDraw[name=f,domain=0:800]
+     {(1/90000)*x^3-(1/100)*x^2+(113/36)*x}
+ \tkzFnDefPointXY[draw](450,400){a}
+ \tkzFnArea[fill=orange!50,domain=0:450](f)
+ \tkzFnArea[fill=orange!80,domain=450:800](f)
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\newpage
+\subsection{面积与阴影线}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=2]
+  \tkzFnInit[xmin=-3,xmax=4,ymin=-2,ymax=4]
+  \tkzFnGrid(-3,-2)(4,4)
+  \tkzFnAxes[ticks=false]
+  \tkzFnDraw[name=f,domain=-2.15:3.2]{(2+x)*exp(-x)}
+  \tkzFnArea[pattern=north west lines,domain=-2:2](f)
+  \tkzFnTangent[draw,color=blue](f,0)
+  \tkzFnTangent[draw,color=blue](f,-1)
+  \tkzFnDefPoint(f,2){C}
+  \tkzFnDefPointXY(2,0){B}
+  \tkzFnDrawPoints(B,C)  \tkzFnLabelPoints[above right](B,C)
+  \tkzFnRep
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\newpage
+\subsection{两曲线之间的面积（彩色）}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.5]
+  \tkzFnInit[xmin=0,xmax=5,ymin=0,ymax=5]
+  \tkzFnGrid  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=0:5]{x}
+  \tkzFnDraw[name=g,domain=1:5]{ln(x)}
+  \tkzFnArea[fill=orange!50,domain=1:5](f,g)
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\subsection{两曲线之间的面积（阴影线）}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=.8]
+  \tkzFnInit[xmin=0,xmax=5,ymin=0,ymax=5]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,domain=0:5]{x}
+  \tkzFnDraw[name=g,domain=1:5]{ln(x)}
+  \tkzFnArea[pattern=north west lines,domain=1:5](f,g)
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+%<--------------------------------------------------------------------------->
+\subsection{两曲线之间的面积：选项 \tkzname{where}}
+曲线相交。设置 \tkzname{where=above} 时，仅显示 $g$ 的图像在 $f$ 的图像上方的部分。
+
+\begin{tkzexample}[latex=7cm]
+\begin{tikzpicture}[scale=1.25]
+ \tkzFnInit[xmin=0,xmax=5,
+            ymin=-1,ymax=3]
+ \tkzFnGrid
+ \tkzFnAxes
+ \tkzFnDraw[name=f,domain=0.5:5]{1/x}
+ \tkzFnDraw[name=g,domain=1:5]{ln(x)}
+ \tkzFnArea[where=above,
+            fill=magenta!50,
+            domain=1:4](g,f)
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\newpage
+\subsection{两曲线之间的面积：洛伦兹曲线}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.25]
+  \tkzFnInit[xmin=0,xmax=1,ymin=0,ymax=1,xstep=0.1,ystep=0.1]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,color=red,domain=0:1]{(exp(x)-1)/(exp(1)-1)}
+  \tkzFnDraw[name=g,color=blue,domain=0:1]{x^3}
+  \tkzFnDraw[name=h,color=green,domain=0:1]{x}
+  \tkzFnArea[fill=purple!40,domain=0:1](h,g)
+  \tkzFnArea[fill=gray!60,domain=0:1](h,f)
+\end{tikzpicture}
+\end{tkzexample}
+
+%<--------------------------------------------------------------------------->
+\subsection{混合样式}
+
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=2.5]
+   \tkzFnInit[xmin=-1,xmax=4,ymin=0,ymax=5]
+   \tkzFnGrid
+   \tkzFnAxes
+   \tkzFnDraw[name=f,domain=-.5:4]{4*x-x^2+4/(x^2+1)^2}
+   \tkzFnDraw[name=g,domain=-.5:4]{x-1+4/(x^2+1)^2}
+   \tkzFnArea[fill=green,domain=1:4](f,g)
+   \tkzFnArea[pattern=north west lines,domain=-.5:1](f,g)
+   \tkzFnRep
+   \tkzFnText(2.5,4.5){$C_f$}
+   \tkzFnText(2.5,1){$C_g$}
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+%<--------------------------------------------------------------------------->
+\subsection{等高线}
+使用 \tkzname{tkz-fct} 时，必须为常函数定义宏；现在只需将数值作为第二个参数写出（第 10 到 14 行）。
+
+\begin{tkzexample}[num]
+\begin{tikzpicture}[scale=.75]
+ \tkzFnInit[xmin=0,xmax=20,ymin=0,ymax=12]
+ \tkzFnGrid[color=orange,sub](0,0)(20,12)
+ \tkzFnAxes
+ \tkzFnDraw[name=a,samples=400,domain=0:8]{(32-4*x)^0.5}
+ \tkzFnDraw[name=b,samples=400,domain=0:18]{(72-4*x)^0.5}
+ \tkzFnDraw[name=c,samples=400,domain=0:20]{(112-4*x)^0.5}
+ \tkzFnDraw[name=d,samples=400,domain=2:20]{(152-4*x)^0.5}
+ \tkzFnDraw[name=e,samples=400,domain=12:20]{(192-4*x)^0.5}
+ \tkzFnArea[fill=gray!80,domain=0:8](b,a)
+ \tkzFnArea[fill=gray!80,domain=8:18](b,0)
+ \tkzFnArea[fill=gray!50,domain=2:20](d,c)
+ \tkzFnArea[fill=gray!50,domain=0:2](12,c)
+ \tkzFnArea[fill=gray!20,domain=12:20](12,e)
+\end{tikzpicture}
+\end{tkzexample}
+
+\endinput

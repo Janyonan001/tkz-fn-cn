@@ -1,0 +1,37 @@
+% !TEX TS-program = lualatex
+% Bridge tkz-fn -> tkz-elements (points exported to z, in cm)
+\documentclass{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{tkz-elements}
+\usepackage[fr]{tkz-fn}
+\parindent=0pt
+\begin{document}
+
+Repère non orthonormé : xstep=1, ystep=2 (1 cm représente 2 unités en ordonnée).
+
+\tkzFnDef{f}{x^2/2}
+\begin{tikzpicture}
+  \tkzFnInit[xmin=-3,xmax=3,ymin=-2,ymax=6,ystep=2]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[thick,red](f)
+  \tkzFnDefPoint(f,2){A}       % A(2;2) in the frame, z.A = (2,1) in cm
+  \tkzFnDefPointXY(0,0){O}
+  \directlua{
+    C.OA = circle(z.O, z.A)     % tkz-elements works in cm
+    z.B  = C.OA.south
+  }
+  \tkzGetNodes
+  \draw[blue] (O) circle [radius=\tkzUseLua{C.OA.radius}];
+  \tkzFnDrawPoints[red](A,O)
+  \fill[blue] (B) circle (1.5pt) node[below right] {$B$};
+  \node[above left] at (A) {$A$};
+\end{tikzpicture}
+
+$A\tkzFnPrintCoord(A)$ dans le repère ; dans tkz-elements :
+z.A = (\directlua{tex.sprint(z.A.re)}, \directlua{tex.sprint(z.A.im)}) en cm.
+
+Retour vers le repère : B a pour coordonnées
+\directlua{tkzfn.point_from_z("B")}%
+$\tkzFnPrintCoord(B)$ (rayon $\sqrt5$ cm donc $y_B=-2\sqrt5\approx -4{,}47$).
+\end{document}

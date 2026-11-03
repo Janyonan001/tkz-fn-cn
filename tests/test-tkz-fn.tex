@@ -1,0 +1,77 @@
+% !TEX TS-program = lualatex
+\documentclass{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{tkz-fn}
+\usetikzlibrary{arrows}
+\parindent=0pt
+\begin{document}
+
+\section*{1. Polynôme, point, tangente (format us)}
+\tkzFnSetup{format=us}
+\tkzFnDef{f}{x^2 - 2*x - 1}
+\begin{tikzpicture}
+  \tkzFnInit[xmin=-2,xmax=4,ymin=-3,ymax=6]
+  \tkzFnGrid
+  \tkzFnAxes
+  \begin{scope}
+    \tkzFnClip
+    \tkzFnDraw[thick,red](f)
+  \end{scope}
+  \tkzFnDefPoint(f,3){A}
+  \tkzFnTangent[blue,kl=1.5,kr=1.5](f,3)
+  \tkzFnDrawPoints[red](A)
+  \node[above left] at (A) {$A$};
+\end{tikzpicture}
+
+$f(3)=\tkzFnPrint{f(3)}$, $f'(3)\approx\tkzFnPrint[4]{diff(f,3)}$,
+$A\tkzFnPrintCoord(A)$, $f(0.25)=\tkzFnPrint[4]{f(0.25)}$,
+$\tkzFnPrint{1234567.891}$, $I=\tkzFnPrintInterval[oc]{-\infty}{2.5}$
+
+\section*{2. Mêmes résultats en format fr}
+\tkzFnSetup{format=fr}
+$f(3)=\tkzFnPrint{f(3)}$, $f'(3)\approx\tkzFnPrint[4]{diff(f,3)}$,
+$A\tkzFnPrintCoord(A)$, $f(0{,}25)=\tkzFnPrint[4]{f(0.25)}$,
+$\tkzFnPrint{1234567.891}$, $I=\tkzFnPrintInterval[oc]{-\infty}{2.5}$,
+$J=\tkzFnPrintInterval[oo]{0}{pi}$
+
+\section*{3. Asymptotes : $1/x$, $\tan x$, $\ln x$ (format fr)}
+\begin{tikzpicture}[scale=.8]
+  \tkzFnInit[xmin=-4,xmax=4,ymin=-4,ymax=4]
+  \tkzFnGrid
+  \tkzFnAxes
+  \begin{scope}
+    \tkzFnClip
+    \tkzFnDraw[thick,blue,samples=400]{1/x}
+    \tkzFnDraw[thick,orange,samples=600]{tan(x)}
+    \tkzFnDraw[thick,green!50!black,domain=0:4]{ln(x)}
+  \end{scope}
+\end{tikzpicture}
+
+\section*{4. Unités : $x\mapsto x^3$ sur $[0;100]$, xstep=10, ystep=100000}
+\begin{tikzpicture}[scale=.5]
+  \tkzFnInit[xmin=0,xmax=100,xstep=10,ymin=0,ymax=1000000,ystep=100000]
+  \tkzFnGrid
+  \tkzFnAxes[font=\scriptsize]
+  \tkzFnDef{g}{x^3}
+  \tkzFnDraw[red,thick](g)
+  \tkzFnDefPoint(g,50){B}
+  \tkzFnTangent[blue,kl=20,kr=20](g,50)
+  \tkzFnDrawPoints(B)
+\end{tikzpicture}
+
+$B\tkzFnPrintCoord(B)$, pente en $B$ : $\tkzFnPrint{diff(g,50)}$
+(dans le repère, et non en cm).
+
+\section*{5. Paramètre Lua et fonction composée}
+\directlua{a = 0.5}
+\tkzFnDef{h}{a*f(x) + 1}
+\begin{tikzpicture}[scale=.6]
+  \tkzFnInit[xmin=-3,xmax=5,ymin=-2,ymax=6,xorigin=0]
+  \tkzFnAxes[labels=false]
+  \tkzFnDraw[domain=-3:5,purple,thick](h)
+  \tkzFnDraw[domain=-3:5,red,dashed](f)
+  \tkzFnDraw[domain=-3:0,samples=2,{[-)},thick]{2}
+  \tkzFnDraw[domain=0:5,samples=2,{[-)},thick]{x/2}
+\end{tikzpicture}
+
+\end{document}

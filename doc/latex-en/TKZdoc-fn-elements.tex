@@ -1,0 +1,47 @@
+\section{With \tkzname{tkz-elements}}\label{sec:elements}
+
+\tkzname{tkz-elements} works in centimeters, \tkzname{tkz-fn} in the units of the coordinate system. When \tkzname{tkz-elements} is loaded, every point defined with \tkzcname{tkzFnDefPoint} or \tkzcname{tkzFnDefPointXY} is also stored in the table \texttt{z}, with its coordinates in centimeters:
+
+\[ \texttt{z.A} = \left(\frac{x_A}{\text{xstep}}, \frac{y_A}{\text{ystep}}\right) \]
+
+The point can then be used with the objects of \tkzname{tkz-elements}: |circle(z.O, z.A)|, |line(z.A, z.B)|, etc. In the other direction, |tkzfn.point_from_z("B")| brings the point \texttt{z.B} back into the coordinate system, so that its coordinates can be written with \tkzcname{tkzFnPrintCoord}.
+
+\tkzBomb If the units of the two axes are different, |circle(z.O, z.A)| is a circle on the page, not a circle in the coordinate system.
+
+\tkzHand \tkzname{tkz-elements} is not loaded by \tkzname{tkz-fn}; the following example needs |\usepackage{tkz-elements}|.
+
+\begin{tkzltxexample}[]
+\tkzFnDef{f}{x^2/2}
+\begin{tikzpicture}
+  \tkzFnInit[xmin=-3,xmax=3,ymin=-2,ymax=6,ystep=2]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[thick,red](f)
+  \tkzFnDefPoint(f,2){A}       % A(2,2) in the system, z.A = (2,1) in cm
+  \tkzFnDefPointXY(0,0){O}
+  \directlua{
+    C.OA = circle(z.O, z.A)     % tkz-elements works in cm
+    z.B  = C.OA.south
+  }
+  \tkzGetNodes
+  \draw[blue] (O) circle [radius=\tkzUseLua{C.OA.radius}];
+  \tkzFnDrawPoints[red](A,O)
+  \fill[blue] (B) circle (1.5pt) node[below right] {$B$};
+\end{tikzpicture}
+
+\directlua{tkzfn.point_from_z("B")}
+$B\tkzFnPrintCoord(B)$   % (0, -4.47) in the coordinate system
+\end{tkzltxexample}
+
+\subsection{In Lua}
+
+The objects of \tkzname{tkz-fn} are available in Lua:
+\begin{itemize}
+  \item |FN.f(2)|: value of the function $f$ at 2;
+  \item |tkzfn.fct("sin(x)")|: creates a function (|FN.g = tkzfn.fct("sin(x)")|); a Lua function can also be given;
+  \item |tkzfn.derivative(f, x)|, |tkzfn.integral(f, a, b)|;
+  \item |tkzfn.to_page(x, y)| and |tkzfn.to_user(X, Y)|: conversions between the coordinate system and the page;
+  \item |tkzfn.points.A|: coordinates of $A$ in the coordinate system.
+\end{itemize}
+
+\endinput

@@ -1,0 +1,110 @@
+\section{Polar curves}
+
+\begin{NewMacroBox}{tkzFnPolar}{\oarg{options}\marg{$\rho(t)$}}
+\emph{$\rho(t)$ is a Lua expression of the variable \texttt{t}; the point drawn is $\big(\rho(t)\cos t, \rho(t)\sin t\big)$. The bounds of the domain are Lua expressions: \texttt{pi} stands for $\pi$.}
+
+\begin{tabular}{lll}
+\toprule
+options             & default & definition                         \\
+\midrule
+\TOline{domain}{0:2*pi}{interval of the values of $t$}
+\TOline{samples}{200}{number of points}
+\TOline{clip}{false}{the curve is clipped to the window}
+\bottomrule
+\end{tabular}
+
+\emph{Other options are \TIKZ\ options.}
+\end{NewMacroBox}
+
+\subsection{Polar equation, example 1}
+
+$ \rho(t)= \cos(t)\sin(t) $
+
+\begin{tkzexample}[latex=8cm]
+\begin{tikzpicture}[scale=0.75]
+ \tkzFnInit[xmin=-0.5,xmax=0.5,
+            ymin=-0.5,ymax=0.5,
+            xstep=0.1,ystep=.1]
+ \tkzFnAxes[ticks=false]
+ \tkzFnPolar[domain=-2*pi:2*pi]{cos(t)*sin(t)}
+\end{tikzpicture}
+\end{tkzexample}
+
+\subsection{Polar equation, example 2}
+$ \rho(t)= \cos(2t)  $
+
+\begin{center}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=1.25]
+   \tkzFnInit[xmin=-1,xmax=1,
+              ymin=-1,ymax=1,
+              xstep=.2,ystep=.2]
+  \tkzFnAxes[ticks=false]
+  \tkzFnPolar[domain=0:2*pi]{cos(2*t)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{Polar equation: heart}
+From Mathworld :  \url{http://mathworld.wolfram.com/HeartCurve.html}
+
+ $\rho(t)= 2-2\sin(t)+\sin(t)\dfrac{\sqrt{\lvert\cos(t)\rvert}}{\sin(t)+1.4}$
+
+\begin{center}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=.6]
+  \tkzFnInit[xmin=-5,xmax=5,ymin=-5,ymax=5]
+  \tkzFnPolar[domain=-pi:pi,
+              samples=800,
+              ball color=red,
+              shading=ball]
+    {2-2*sin(t)+sin(t)*sqrt(abs(cos(t)))/(sin(t)+1.4)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\subsection{Polar equation, example 4}
+ $\rho(t)= 1-\sin(t)$
+
+\begin{center}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=1]
+ \tkzFnInit[xmin=-5,xmax=5,ymin=-5,ymax=5]
+ \tkzFnPolar[domain=0:2*pi,samples=400]{1-sin(t)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{Polar equation: cannabis curve}
+ Cannabis curve from mathworld : \url{http://mathworld.wolfram.com/CannabisCurve.html}
+
+$ \rho(t)=(1+0.9\cos(8t))(1+0.1\cos(24t))(1+0.1\cos(200t))(1+\sin(t)) $
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=2]
+  \tkzFnInit[xmin=-5,xmax=5,ymin=-5,ymax=5]
+  \tkzFnPolar[domain=0:2*pi,samples=2000]
+  {(1+.9*cos(8*t))*(1+.1*cos(24*t))*(1+.1*cos(200*t))*(1+sin(t))}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\newpage
+\subsection{Scarabaeus curve}
+From mathworld : \url{http://mathworld.wolfram.com/Scarabaeus.html}
+
+$\rho(t)=1.6\cos(2t)-3\cos(t) $
+
+\begin{center}
+\begin{tkzexample}[]
+\begin{tikzpicture}[scale=1]
+  \tkzFnInit[xmin=-5,xmax=5,ymin=-5,ymax=5]
+  \tkzFnPolar[domain=0:2*pi,samples=400]{1.6*cos(2*t)-3*cos(t)}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\endinput

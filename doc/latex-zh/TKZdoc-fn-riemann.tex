@@ -1,0 +1,84 @@
+\section{黎曼和}
+
+\begin{NewMacroBox}{tkzFnRiemann}{\oarg{选项}\parg{函数名}}
+\emph{绘制黎曼和的矩形。\tkzname{tkz-fct} 的四个宏合并为一个；方法通过选项选择。}
+
+\begin{tabular}{lll}
+\toprule
+选项             & 默认值 & 说明                         \\
+\midrule
+\TOline{interval}{xmin:xmax}{应用方法的区间}
+\TOline{number}{10}{子区间数}
+\TOline{method}{left}{矩形高度：见下表}
+\TOline{clip}{false}{矩形裁剪到窗口内}
+\bottomrule
+\end{tabular}
+
+\begin{tabular}{ll}
+\toprule
+方法 & $[x_i, x_{i+1}]$ 上矩形的高度 \\
+\midrule
+\texttt{left}  & $f(x_i)$ \\
+\texttt{right} & $f(x_{i+1})$ \\
+\texttt{mid}   & $f\left(\frac{x_i+x_{i+1}}{2}\right)$ \\
+\texttt{inf}   & $\min\big(f(x_i),f(x_{i+1})\big)$ \\
+\texttt{sup}   & $\max\big(f(x_i),f(x_{i+1})\big)$ \\
+\bottomrule
+\end{tabular}
+
+\emph{其他选项为 \TIKZ\ 选项；样式为 \tkzname{tkzfn riemann}。求和值通过 \texttt{riemann(f,a,b,n,"left")} 给出。}
+\end{NewMacroBox}
+
+\subsection{黎曼和示例}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=3.5]
+\tkzFnInit[xmin=0,xmax=3,ymin=0,ymax=1.75]
+\tkzFnAxes
+\tkzFnGrid(0,0)(3,1.75)
+\tkzFnDraw[name=f,color=red,domain=1/3:3]{0.125*(3*x-1)+0.375*(3*x-1)/(x*x)}
+\tkzFnRiemann[fill=green!40,opacity=.2,color=green,
+              line width=1pt,interval=1/2:e,number=10](f)
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+\subsection{\tkzname{inf} 和 \tkzname{sup} 方法}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.75]
+  \tkzFnInit[xmin=-3,xmax=6,ymin=-2,ymax=14,ystep=2]
+  \tkzFnAxes[ticks=false]
+  \tkzFnDraw[name=f,line width=2pt,color=red,domain=-3:6]{(-x-2)*(x-5)}
+  \tkzFnRiemann[method=sup,fill=blue!40,opacity=.5,interval=-1:5](f)
+  \tkzFnRiemann[method=inf,fill=green!40,opacity=.5,interval=-1:5](f)
+\end{tikzpicture}
+\end{tkzexample}
+
+\newpage
+\subsection{\tkzname{mid} 方法}
+
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}[scale=1.75]
+  \tkzFnInit[xmin=-3,xmax=6,ymin=-2,ymax=14,ystep=2]
+  \tkzFnAxes[ticks=false]
+  \tkzFnDraw[name=f,line width=2pt,color=red,domain=-3:6]{(-x-2)*(x-5)}
+  \tkzFnRiemann[method=mid,fill=blue!40,opacity=.5,interval=-1:5](f)
+\end{tikzpicture}
+\end{tkzexample}
+
+\subsection{求和值}
+
+对于 $[-1, 5]$ 上的 $f(x)=(-x-2)(x-5)$，使用 10 个矩形：
+
+\begin{tkzexample}[latex=6cm]
+\tkzFnDef{f}{(-x-2)*(x-5)}
+\begin{tabular}{ll}
+下和      & \tkzFnPrint{riemann(f,-1,5,10,"inf")}\\
+中值      & \tkzFnPrint{riemann(f,-1,5,10,"mid")}\\
+上和      & \tkzFnPrint{riemann(f,-1,5,10,"sup")}\\
+积分 & \tkzFnPrint{integral(f,-1,5)}
+\end{tabular}
+\end{tkzexample}
+
+\endinput

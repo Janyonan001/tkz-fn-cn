@@ -1,0 +1,59 @@
+\section{List of the macros}
+
+\begin{itemize}
+\item \tkzcname{tkzFnSetup}\marg{format=us or fr,decimals=2,axes=school or box,arrows=end}
+\item \tkzcname{tkzFnInit}\oarg{xmin=-5,xmax=5,xstep=1,ymin=-5,ymax=5,ystep=1,enlarge}
+\item \tkzcname{tkzFnGrid}\oarg{dx,dy,sub,subdx,subdy}\parg{$x_1$,$y_1$}\parg{$x_2$,$y_2$}
+\item \tkzcname{tkzFnAxes}\oarg{dx,dy,xlabel,ylabel,ticks,labels,line,origin,trig,decimals,arrows,box,tick length}
+\item \tkzcname{tkzFnAxisX}\oarg{label,label style,step,trig,ticks,labels,line,decimals,arrows}
+\item \tkzcname{tkzFnAxisY}\oarg{label,label style,step,ticks,labels,line,decimals,arrows}
+\item \tkzcname{tkzFnClip}\oarg{margin}
+\item \tkzcname{tkzFnRep}\oarg{options}
+\item \tkzcname{tkzFnText}\oarg{options}\parg{$x$,$y$}\marg{text}
+\item \tkzcname{tkzFnDef}\marg{name}\marg{expression}
+\item \tkzcname{tkzFnDraw}\oarg{domain,samples=200,name,clip=true,mark,smooth}\parg{name} or \marg{expression}
+\item \tkzcname{tkzFnParam}\oarg{domain=0:2*pi,samples=200,clip=false}\marg{$x(t)$}\marg{$y(t)$}
+\item \tkzcname{tkzFnPolar}\oarg{domain=0:2*pi,samples=200,clip=false}\marg{$\rho(t)$}
+\item \tkzcname{tkzFnDefPoint}\oarg{draw,size}\parg{f,$x$}\marg{name}
+\item \tkzcname{tkzFnDefPointXY}\oarg{draw,size}\parg{$x$,$y$}\marg{name}
+\item \tkzcname{tkzFnDrawPoints}\oarg{size}\parg{A,B,\dots}
+\item \tkzcname{tkzFnMarkPoints}\oarg{size}\parg{f}\marg{list}
+\item \tkzcname{tkzFnLabelPoint}\oarg{options}\parg{A}\marg{text}, \tkzcname{tkzFnLabelPoints}\oarg{options}\parg{A,B,\dots}
+\item \tkzcname{tkzFnShowCoord}\oarg{xlabel,ylabel,decimals}\parg{A}
+\item \tkzcname{tkzFnTangent}\oarg{kl=1,kr=1,draw,clip=true}\parg{f,$a$}
+\item \tkzcname{tkzFnArea}\oarg{domain,where=both,samples,clip=true}\parg{f} or \parg{f,g}
+\item \tkzcname{tkzFnRiemann}\oarg{method=left,interval,number=10,clip=false}\parg{f}
+\item \tkzcname{tkzFnVLines}\oarg{options}\marg{list}, \tkzcname{tkzFnHLines}\oarg{options}\marg{list}
+\item \tkzcname{tkzFnDrawData}\oarg{options}\marg{$x_1$/$y_1$,\dots}
+\item \tkzcname{tkzFnPrint}\oarg{decimals}\marg{expression}
+\item \tkzcname{tkzFnPrintCoord}\oarg{decimals}\parg{A}
+\item \tkzcname{tkzFnPrintInterval}\oarg{oo, cc, oc, co}\marg{a}\marg{b}
+\end{itemize}
+
+\subsection{Styles}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+style & default \\
+\midrule
+\texttt{tkzfn curve} & \\
+\texttt{tkzfn tangent} & \\
+\texttt{tkzfn point} & \texttt{draw=black,fill=black} \\
+\texttt{tkzfn area} & \texttt{fill=lightgray,fill opacity=.5} \\
+\texttt{tkzfn riemann} & \texttt{draw,fill=gray!20} \\
+\texttt{tkzfn line} & \\
+\texttt{tkzfn grid} & \texttt{help lines} \\
+\texttt{tkzfn subgrid} & \texttt{very thin,opacity=.5} \\
+\texttt{tkzfn axis} & \texttt{->,>=stealth} \\
+\texttt{tkzfn ticks} & \texttt{thin} \\
+\texttt{tkzfn tick label} & \texttt{font=\textbackslash small} \\
+\texttt{tkzfn show coord} & \texttt{dashed,thin} \\
+\texttt{tkzfn rep} & \texttt{->,>=stealth,very thick} \\
+\texttt{tkzfn box} & \\
+\texttt{tkzfn text} & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\endinput

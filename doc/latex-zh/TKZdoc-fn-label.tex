@@ -1,0 +1,35 @@
+\section{曲线命名}
+
+给曲线起个名字对读者很有帮助。以由下式定义的函数 $f$ 为例：
+
+\[
+   x>0\ \text{且}\ f(x)=\dfrac{x^2+x-1}{x^3}
+\]
+
+用 \tkzcname{tkzFnText} 宏很容易写出标题。坐标以坐标轴单位给出。要沿曲线放置文字，最简单的方法是定义曲线上的一个点并使用其名称。
+
+\begin{tkzltxexample}[num]
+  \tkzFnDefPoint(f,3){P}
+  \tkzFnText[above right](P){${\mathcal{C}}_f$}
+\end{tkzltxexample}
+
+第一行定义图像上 $x=3$ 处的点 $P$。第二行在 $P$ 处放置文字。\TIKZ\ 选项可调整效果。
+
+\subsection{添加标签}
+
+\begin{center}
+\begin{tkzexample}[vbox]
+\begin{tikzpicture}
+  \tkzFnInit[xmin=0,xmax=10,
+             ymin=0,ymax=1.2,ystep=0.2]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[name=f,thick,color=red,domain=0.55:10]{(x*x+x-1)/x^3}
+  \tkzFnText(3,-0.3){\textbf{$\mathbf{f}$ 的图像}}
+  \tkzFnDefPoint(f,3){P}
+  \tkzFnText[above right,text=red](P){${\mathcal{C}}_f$}
+\end{tikzpicture}
+\end{tkzexample}
+\end{center}
+
+\endinput

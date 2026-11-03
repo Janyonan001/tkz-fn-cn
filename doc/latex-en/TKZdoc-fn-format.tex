@@ -1,0 +1,93 @@
+\section{Writing the results: American or French format}\label{sec:format}
+
+The numbers written by \tkzname{tkz-fn} (tick labels, coordinates, results of computations) follow one of the two following conventions:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& American format (\texttt{us}) & French format (\texttt{fr}) \\
+\midrule
+decimal separator & $3.14$ & $3{,}14$ \\
+thousands separator & $12{,}345$ & $12\,345$ (thin space) \\
+intervals & $(a,\,b)$, $[a,\,b]$ & $\mathopen{]}a\,;\,b\mathclose{[}$, $\mathopen{[}a\,;\,b\mathclose{]}$ \\
+coordinates & $A(2,\,3)$ & $A(2\,;\,3)$ \\
+origin & $0$ & $O$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Thousands are separated only from five digits on: $1234$ but $\tkzFnPrint{12345}$.
+
+\subsection{Choosing the format}
+
+\begin{itemize}
+  \item By default, the format is French if the language of \tkzname{babel} is French at the beginning of the document, American otherwise.
+  \item The package options force the format: |\usepackage[us]{tkz-fn}| or |\usepackage[fr]{tkz-fn}|.
+  \item In the document: |\tkzFnSetup{format=fr}|.
+\end{itemize}
+
+\begin{NewMacroBox}{tkzFnSetup}{\marg{options}}
+\begin{tabular}{lll}
+\toprule
+options             & default & definition  \\
+\midrule
+\TOline{format}{us or fr}{format of the numbers}
+\TOline{decimals}{2}{maximum number of decimal places of \tkzcname{tkzFnPrint}}
+\TOline{axes}{school}{presentation of the axes: \texttt{school} or \texttt{box}}
+\TOline{arrows}{end}{arrows of the axes: \texttt{end}, \texttt{both} or \texttt{none}}
+\bottomrule
+\end{tabular}
+\end{NewMacroBox}
+
+\subsection{Writing a result: \tkzcname{tkzFnPrint}}
+
+\begin{NewMacroBox}{tkzFnPrint}{\oarg{decimals}\marg{Lua expression}}
+\emph{Computes the expression and writes the rounded result, without useless zeros. The functions defined with \tkzcname{tkzFnDef} can be used, as well as \texttt{diff(f,x)}, \texttt{integral(f,a,b)} and \texttt{riemann(f,a,b,n,"left")}.}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnPrintInterval}{\oarg{oo, cc, oc or co}\marg{a}\marg{b}}
+\emph{Writes an interval; \texttt{o} = open, \texttt{c} = closed. The endpoints are Lua expressions or \TeX\ text (\texttt{-\textbackslash infty}).}
+\end{NewMacroBox}
+
+\subsection{Example}
+
+\begin{tkzexample}[latex=6cm]
+\tkzFnDef{f}{x^2-2*x-1}
+\begin{tikzpicture}[scale=.5]
+  \tkzFnInit[xmin=-2,xmax=4,
+             ymin=-3,ymax=6]
+  \tkzFnGrid \tkzFnAxes
+  \tkzFnDraw[thick,red](f)
+  \tkzFnDefPoint[draw](f,3.5){A}
+\end{tikzpicture}
+
+$A\tkzFnPrintCoord(A)$,
+$f'(3)=\tkzFnPrint{diff(f,3)}$,
+$\tkzFnPrint[4]{f(0.25)}$,
+$\tkzFnPrint{1234567.891}$,
+$I=\tkzFnPrintInterval[oc]{-\infty}{2.5}$
+
+\tkzFnSetup{format=fr}
+$A\tkzFnPrintCoord(A)$,
+$f'(3)=\tkzFnPrint{diff(f,3)}$,
+$\tkzFnPrint[4]{f(0.25)}$,
+$\tkzFnPrint{1234567.891}$,
+$I=\tkzFnPrintInterval[oc]{-\infty}{2.5}$
+\tkzFnSetup{format=us}
+\end{tkzexample}
+
+\subsection{Tick labels in French format}
+
+\begin{tkzexample}[latex=7cm]
+\tkzFnSetup{format=fr}
+\begin{tikzpicture}[scale=.8]
+  \tkzFnInit[xmin=0,xmax=2,xstep=.25,
+             ymin=0,ymax=20000,ystep=4000]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[blue,thick]{5000*x^2}
+\end{tikzpicture}
+\tkzFnSetup{format=us}
+\end{tkzexample}
+
+\endinput

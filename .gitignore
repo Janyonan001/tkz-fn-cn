@@ -1,0 +1,25 @@
+# artefacts LaTeX
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.idx
+*.ilg
+*.ind
+*.zip
+
+# builds locaux
+build/
+.DS_Store
+__MACOSX/
+
+# éditeurs / outils
+.nova/
+Claude outputs/
+
+# tests : seuls les sources
+tests/*.pdf
+.pkg.conf

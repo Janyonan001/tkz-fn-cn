@@ -1,0 +1,523 @@
+% File: tkz-fn.sty
+% Copyright (c) 2026 Alain Matthes
+% SPDX-License-Identifier: LPPL-1.3c
+% Maintainer: Alain Matthes
+%
+% tkz-fn : graphs of functions with LuaLaTeX and TikZ.
+% Independent of tkz-base and tkz-euclide; optional bridge to tkz-elements.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tkz-fn}[2026/10/19 v1.00c Graphs of functions with Lua]
+\typeout{Package tkz-fn v1.00c (2026/10/19) loaded.}
+
+\RequirePackage{iftex}
+\ifluatex\else
+  \PackageError{tkz-fn}{This package requires LuaLaTeX}%
+    {Please compile with LuaLaTeX.}%
+  \expandafter\endinput
+\fi
+
+% ---------------------------------------------------------------------
+% options : fr | us (default: fr if babel french is active, else us)
+% ---------------------------------------------------------------------
+\def\tkzfn@pkgformat{}
+\DeclareOption{fr}{\def\tkzfn@pkgformat{fr}}
+\DeclareOption{french}{\def\tkzfn@pkgformat{fr}}
+\DeclareOption{us}{\def\tkzfn@pkgformat{us}}
+\DeclareOption{american}{\def\tkzfn@pkgformat{us}}
+\ProcessOptions\relax
+
+\RequirePackage{tikz}
+\usetikzlibrary{plotmarks}
+
+\directlua{require("tkz_fn")}
+\ifx\tkzfn@pkgformat\@empty\else
+  \directlua{tkzfn.set_format("\tkzfn@pkgformat")}
+\fi
+\AtBeginDocument{%
+  \directlua{tkzfn.auto_format("\luaescapestring{\languagename}")}}
+
+% ---------------------------------------------------------------------
+% styles
+% ---------------------------------------------------------------------
+\tikzset{
+  tkzfn curve/.style      = {},
+  tkzfn tangent/.style    = {},
+  tkzfn point/.style      = {draw=black,fill=black},
+  tkzfn area/.style       = {fill=lightgray,fill opacity=.5},
+  tkzfn riemann/.style    = {draw,fill=gray!20},
+  tkzfn line/.style       = {},
+  tkzfn grid/.style       = {help lines},
+  tkzfn subgrid/.style    = {very thin,opacity=.5},
+  tkzfn axis/.style       = {->,>=stealth},
+  tkzfn ticks/.style      = {thin},
+  tkzfn tick label/.style = {font=\small},
+  tkzfn show coord/.style = {dashed,thin},
+  tkzfn rep/.style        = {->,>=stealth,very thick},
+  tkzfn box/.style        = {},
+  tkzfn text/.style       = {},
+}
+
+% ---------------------------------------------------------------------
+% call of Lua
+% The Lua code is built in a group where the active characters of babel
+% (: ; ! ? ~) are made harmless, then \directlua is executed outside.
+%   \tkzfn@E{...}  : expanded  (numbers, expressions, \foreach variables)
+%   \tkzfn@D{...}  : not expanded (TeX text, TikZ options)
+%   \tkzfn@DM\macro: contents of a macro, not expanded
+% ---------------------------------------------------------------------
+\begingroup
+  \catcode`\~=13
+  \lccode`\~=`\: \lowercase{\endgroup\def\tkzfn@safe@a{\def~{:}}}
+\begingroup
+  \catcode`\~=13
+  \lccode`\~=`\; \lowercase{\endgroup\def\tkzfn@safe@b{\def~{;}}}
+\begingroup
+  \catcode`\~=13
+  \lccode`\~=`\! \lowercase{\endgroup\def\tkzfn@safe@c{\def~{!}}}
+\begingroup
+  \catcode`\~=13
+  \lccode`\~=`\? \lowercase{\endgroup\def\tkzfn@safe@d{\def~{?}}}
+\def\tkzfn@safe{%
+  \tkzfn@safe@a\tkzfn@safe@b\tkzfn@safe@c\tkzfn@safe@d
+  \def~{\string~}}
+
+\def\tkzfn@E#1{\luaescapestring{#1}}
+\def\tkzfn@D#1{\luaescapestring{\detokenize{#1}}}
+\def\tkzfn@DM#1{\luaescapestring{\detokenize\expandafter{#1}}}
+
+\def\tkzfn@lua#1{%
+  \begingroup
+    \tkzfn@safe
+    \xdef\tkzfn@code{#1}%
+  \endgroup
+  \directlua{\tkzfn@code}}
+
+% skips spaces before (
+\def\tkzfn@sp#1{\@ifnextchar({#1}{\PackageError{tkz-fn}{`(' expected}{}}}
+
+% unknown keys are collected in \tkzfn@tikz and given to TikZ
+\def\tkzfn@unknown#1{%
+  \def\tkzfn@val{#1}%
+  \ifx\tkzfn@val\pgfkeysnovalue@text
+    \edef\tkzfn@tikz{\unexpanded\expandafter{\tkzfn@tikz}%
+      {\unexpanded\expandafter{\pgfkeyscurrentname}},}%
+  \else
+    \edef\tkzfn@tikz{\unexpanded\expandafter{\tkzfn@tikz}%
+      \unexpanded\expandafter{\pgfkeyscurrentname}={\unexpanded{#1}},}%
+  \fi}
+% \tkzfn@keys{family}{defaults}{user options}
+\def\tkzfn@keys#1#2#3{%
+  \def\tkzfn@tikz{}%
+  \edef\tkzfn@tmp{\noexpand\pgfqkeys{/tkzfn/#1}%
+    {\unexpanded\expandafter{#2},\unexpanded{#3}}}%
+  \tkzfn@tmp}
+% \tkzfn@family{family}{keys}
+\def\tkzfn@family#1#2{%
+  \pgfkeys{/tkzfn/#1/.cd,#2,.unknown/.code={\tkzfn@unknown{##1}}}}
+
+% ---------------------------------------------------------------------
+% setup
+% ---------------------------------------------------------------------
+\pgfkeys{/tkzfn/setup/.cd,
+  format/.code   = {\directlua{tkzfn.set_format("\luaescapestring{#1}")}},
+  decimals/.code = {\directlua{tkzfn.set_decimals("\luaescapestring{#1}")}},
+  axes/.code     = {\directlua{tkzfn.set_axes_style("\luaescapestring{#1}")}},
+  arrows/.code   = {\directlua{tkzfn.set_arrows("\luaescapestring{#1}")}},
+}
+\def\tkzFnSetup#1{\pgfqkeys{/tkzfn/setup}{#1}}
+
+% ---------------------------------------------------------------------
+% frame : \tkzFnInit[xmin=..,xmax=..,xstep=..,ymin=..,ymax=..,ystep=..]
+% ---------------------------------------------------------------------
+\pgfkeys{/tkzfn/init/.cd,
+  xmin/.store in    = \tkzfn@xmin,
+  xmax/.store in    = \tkzfn@xmax,
+  xstep/.store in   = \tkzfn@xstep,
+  ymin/.store in    = \tkzfn@ymin,
+  ymax/.store in    = \tkzfn@ymax,
+  ystep/.store in   = \tkzfn@ystep,
+  xorigin/.store in = \tkzfn@xorigin,
+  yorigin/.store in = \tkzfn@yorigin,
+  enlarge/.store in = \tkzfn@enlarge,
+  enlarge/.default  = 0.1,
+  enlarge x/.store in = \tkzfn@enlargex,
+  enlarge y/.store in = \tkzfn@enlargey,
+}
+\def\tkzFnInit{\@ifnextchar[{\tkzfn@init}{\tkzfn@init[]}}
+\def\tkzfn@init[#1]{%
+  \begingroup
+  \pgfqkeys{/tkzfn/init}{xmin=-5,xmax=5,xstep=1,ymin=-5,ymax=5,ystep=1,
+                         xorigin=0,yorigin=0,enlarge=0,enlarge x=,enlarge y=,#1}%
+  \tkzfn@lua{tkzfn.init{
+    xmin    = "\tkzfn@E\tkzfn@xmin",
+    xmax    = "\tkzfn@E\tkzfn@xmax",
+    xstep   = "\tkzfn@E\tkzfn@xstep",
+    ymin    = "\tkzfn@E\tkzfn@ymin",
+    ymax    = "\tkzfn@E\tkzfn@ymax",
+    ystep   = "\tkzfn@E\tkzfn@ystep",
+    xorigin = "\tkzfn@E\tkzfn@xorigin",
+    yorigin = "\tkzfn@E\tkzfn@yorigin",
+    enlarge = "\tkzfn@E\tkzfn@enlarge",
+    enlargex = "\tkzfn@E\tkzfn@enlargex",
+    enlargey = "\tkzfn@E\tkzfn@enlargey"}}%
+  \endgroup}
+
+% ---------------------------------------------------------------------
+% grid : \tkzFnGrid[dx,dy,sub,subdx,subdy,<TikZ>](x1,y1)(x2,y2)
+% ---------------------------------------------------------------------
+\tkzfn@family{grid}{
+  dx/.store in    = \tkzfn@dx,
+  dy/.store in    = \tkzfn@dy,
+  sub/.store in   = \tkzfn@sub,
+  sub/.default    = true,
+  subdx/.store in = \tkzfn@subdx,
+  subdy/.store in = \tkzfn@subdy}
+\def\tkzFnGrid{\@ifnextchar[{\tkzfn@grid}{\tkzfn@grid[]}}
+\def\tkzfn@grid[#1]{%
+  \@ifnextchar({\tkzfn@grid@region{#1}}{\tkzfn@grid@do{#1}{}}}
+\def\tkzfn@grid@region#1(#2,#3)(#4,#5){\tkzfn@grid@do{#1}{#2,#3,#4,#5}}
+\def\tkzfn@grid@do#1#2{%
+  \begingroup
+  \tkzfn@keys{grid}{dx=,dy=,sub=false,subdx=,subdy=}{#1}%
+  \tkzfn@lua{tkzfn.grid{
+    dx     = "\tkzfn@E\tkzfn@dx",
+    dy     = "\tkzfn@E\tkzfn@dy",
+    sub    = "\tkzfn@E\tkzfn@sub",
+    subdx  = "\tkzfn@E\tkzfn@subdx",
+    subdy  = "\tkzfn@E\tkzfn@subdy",
+    region = "\tkzfn@E{#2}",
+    opts   = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+% ---------------------------------------------------------------------
+% axes
+% \tkzFnAxes[dx,dy,xlabel,ylabel,labels,ticks,line,origin,trig,decimals]
+% \tkzFnAxisX[label,label style,step,trig,labels,ticks,line,decimals]
+% \tkzFnAxisY[label,label style,step,labels,ticks,line,decimals]
+% ---------------------------------------------------------------------
+\tkzfn@family{axes}{
+  dx/.store in       = \tkzfn@dx,
+  dy/.store in       = \tkzfn@dy,
+  step/.store in     = \tkzfn@step,
+  labels/.store in   = \tkzfn@labels,
+  ticks/.store in    = \tkzfn@ticks,
+  line/.store in     = \tkzfn@line,
+  xlabel/.store in   = \tkzfn@xlabel,
+  ylabel/.store in   = \tkzfn@ylabel,
+  label/.store in    = \tkzfn@label,
+  label style/.store in = \tkzfn@labelstyle,
+  origin/.store in   = \tkzfn@origin,
+  trig/.store in     = \tkzfn@trig,
+  decimals/.store in = \tkzfn@decimals,
+  box/.store in      = \tkzfn@box,
+  box/.default       = true,
+  style/.store in    = \tkzfn@axstyle,
+  tick length/.store in = \tkzfn@ticklength,
+  arrows/.store in   = \tkzfn@arrows}
+\def\tkzfn@axes@defaults{dx=,dy=,step=,labels=true,ticks=true,line=true,
+  xlabel=,ylabel=,label=,label style=,origin=,trig=0,decimals=4,
+  box=false,style=,tick length=,arrows=}
+\def\tkzfn@axes@table{%
+    dx       = "\tkzfn@E\tkzfn@dx",
+    dy       = "\tkzfn@E\tkzfn@dy",
+    step     = "\tkzfn@E\tkzfn@step",
+    labels   = "\tkzfn@E\tkzfn@labels",
+    ticks    = "\tkzfn@E\tkzfn@ticks",
+    line     = "\tkzfn@E\tkzfn@line",
+    xlabel   = "\tkzfn@DM\tkzfn@xlabel",
+    ylabel   = "\tkzfn@DM\tkzfn@ylabel",
+    label    = "\tkzfn@DM\tkzfn@label",
+    labelstyle = "\tkzfn@DM\tkzfn@labelstyle",
+    origin   = "\tkzfn@DM\tkzfn@origin",
+    trig     = "\tkzfn@E\tkzfn@trig",
+    decimals = "\tkzfn@E\tkzfn@decimals",
+    box      = "\tkzfn@E\tkzfn@box",
+    style    = "\tkzfn@E\tkzfn@axstyle",
+    ticklength = "\tkzfn@E\tkzfn@ticklength",
+    arrows   = "\tkzfn@E\tkzfn@arrows",
+    opts     = "\tkzfn@DM\tkzfn@tikz"}
+
+\def\tkzFnAxes{\@ifnextchar[{\tkzfn@axes}{\tkzfn@axes[]}}
+\def\tkzfn@axes[#1]{%
+  \begingroup
+  \tkzfn@keys{axes}{\tkzfn@axes@defaults}{#1}%
+  \tkzfn@lua{tkzfn.axes{\tkzfn@axes@table}}%
+  \endgroup}
+\def\tkzFnAxisX{\@ifnextchar[{\tkzfn@axisx}{\tkzfn@axisx[]}}
+\def\tkzfn@axisx[#1]{%
+  \begingroup
+  \tkzfn@keys{axes}{\tkzfn@axes@defaults}{#1}%
+  \tkzfn@lua{tkzfn.axis("x",{\tkzfn@axes@table})}%
+  \endgroup}
+\def\tkzFnAxisY{\@ifnextchar[{\tkzfn@axisy}{\tkzfn@axisy[]}}
+\def\tkzfn@axisy[#1]{%
+  \begingroup
+  \tkzfn@keys{axes}{\tkzfn@axes@defaults}{#1}%
+  \tkzfn@lua{tkzfn.axis("y",{\tkzfn@axes@table})}%
+  \endgroup}
+
+% clip to the window, frame vectors
+\def\tkzFnClip{\@ifnextchar[{\tkzfn@clip}{\tkzfn@clip[0]}}
+\def\tkzfn@clip[#1]{\tkzfn@lua{tkzfn.clip{margin = "\tkzfn@E{#1}"}}}
+
+\def\tkzFnRep{\@ifnextchar[{\tkzfn@rep}{\tkzfn@rep[]}}
+\def\tkzfn@rep[#1]{\tkzfn@lua{tkzfn.rep{opts = "\tkzfn@D{#1}"}}}
+
+% ---------------------------------------------------------------------
+% functions
+% \tkzFnDef{f}{x^2-2*x}
+% \tkzFnDraw[domain=a:b,samples=n,clip,name,<TikZ>](f)   named function
+% \tkzFnDraw[...]{expression}                            expression in x
+% ---------------------------------------------------------------------
+\def\tkzFnDef#1#2{\tkzfn@lua{tkzfn.def("\tkzfn@E{#1}","\tkzfn@E{#2}")}}
+
+\tkzfn@family{draw}{
+  domain/.store in  = \tkzfn@domain,
+  samples/.store in = \tkzfn@samples,
+  clip/.store in    = \tkzfn@clip,
+  clip/.default     = true,
+  name/.store in    = \tkzfn@name}
+\def\tkzFnDraw{\@ifnextchar[{\tkzfn@draw}{\tkzfn@draw[]}}
+\def\tkzfn@draw[#1]{\@ifnextchar({\tkzfn@draw@name{#1}}{\tkzfn@draw@expr{#1}}}
+\def\tkzfn@draw@name#1(#2){\tkzfn@dodraw{#1}{name}{#2}}
+\def\tkzfn@draw@expr#1#2{\tkzfn@dodraw{#1}{expr}{#2}}
+\def\tkzfn@dodraw#1#2#3{%
+  \begingroup
+  \tkzfn@keys{draw}{domain=,samples=200,clip=true,name=}{#1}%
+  \tkzfn@lua{tkzfn.draw_curve{
+    kind    = "#2",
+    f       = "\tkzfn@E{#3}",
+    name    = "\tkzfn@E\tkzfn@name",
+    domain  = "\tkzfn@E\tkzfn@domain",
+    samples = "\tkzfn@E\tkzfn@samples",
+    clip    = "\tkzfn@E\tkzfn@clip",
+    opts    = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+% \tkzFnParam[domain,samples,clip,<TikZ>]{x(t)}{y(t)}
+\def\tkzFnParam{\@ifnextchar[{\tkzfn@param}{\tkzfn@param[]}}
+\def\tkzfn@param[#1]#2#3{%
+  \begingroup
+  \tkzfn@keys{draw}{domain=,samples=200,clip=false,name=}{#1}%
+  \tkzfn@lua{tkzfn.param{
+    x       = "\tkzfn@E{#2}",
+    y       = "\tkzfn@E{#3}",
+    domain  = "\tkzfn@E\tkzfn@domain",
+    samples = "\tkzfn@E\tkzfn@samples",
+    clip    = "\tkzfn@E\tkzfn@clip",
+    opts    = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+% \tkzFnPolar[domain,samples,clip,<TikZ>]{rho(t)}
+\def\tkzFnPolar{\@ifnextchar[{\tkzfn@polar}{\tkzfn@polar[]}}
+\def\tkzfn@polar[#1]#2{%
+  \begingroup
+  \tkzfn@keys{draw}{domain=,samples=200,clip=false,name=}{#1}%
+  \tkzfn@lua{tkzfn.polar{
+    rho     = "\tkzfn@E{#2}",
+    domain  = "\tkzfn@E\tkzfn@domain",
+    samples = "\tkzfn@E\tkzfn@samples",
+    clip    = "\tkzfn@E\tkzfn@clip",
+    opts    = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+% ---------------------------------------------------------------------
+% points
+% \tkzFnDefPoint[draw](f,x){M}     point of the curve of f (z.M with tkz-elements)
+% \tkzFnDefPointXY[draw](x,y){M}   point given by its coordinates (frame units)
+% \tkzFnDrawPoints[size,<TikZ>](M,N,...)
+% \tkzFnMarkPoints[size,<TikZ>](f){list}   points of the curve, no name
+% \tkzFnLabelPoint[<TikZ>](M){text}, \tkzFnLabelPoints[<TikZ>](M,N,...)
+% \tkzFnShowCoord[xlabel,ylabel,decimals,<TikZ>](M)
+% \tkzFnPrintCoord[decimals](M)        coordinates of M, fr or us
+% ---------------------------------------------------------------------
+\tkzfn@family{points}{
+  size/.store in = \tkzfn@size,
+  draw/.store in = \tkzfn@drawpt,
+  draw/.default  = true}
+
+\def\tkzFnDefPoint{\@ifnextchar[{\tkzfn@defpoint}{\tkzfn@defpoint[]}}
+\def\tkzfn@defpoint[#1]{\tkzfn@sp{\tkzfn@defpoint@{#1}}}
+\def\tkzfn@defpoint@#1(#2,#3)#4{%
+  \begingroup
+  \tkzfn@keys{points}{size=1.5pt,draw=false}{#1}%
+  \tkzfn@lua{tkzfn.def_point{
+    name = "\tkzfn@E{#4}", f = "\tkzfn@E{#2}", x = "\tkzfn@E{#3}",
+    draw = "\tkzfn@E\tkzfn@drawpt", size = "\tkzfn@E\tkzfn@size",
+    opts = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+\def\tkzFnDefPointXY{\@ifnextchar[{\tkzfn@defpointxy}{\tkzfn@defpointxy[]}}
+\def\tkzfn@defpointxy[#1]{\tkzfn@sp{\tkzfn@defpointxy@{#1}}}
+\def\tkzfn@defpointxy@#1(#2,#3)#4{%
+  \begingroup
+  \tkzfn@keys{points}{size=1.5pt,draw=false}{#1}%
+  \tkzfn@lua{tkzfn.def_point_xy{
+    name = "\tkzfn@E{#4}", x = "\tkzfn@E{#2}", y = "\tkzfn@E{#3}",
+    draw = "\tkzfn@E\tkzfn@drawpt", size = "\tkzfn@E\tkzfn@size",
+    opts = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+\def\tkzFnDrawPoints{\@ifnextchar[{\tkzfn@drawpoints}{\tkzfn@drawpoints[]}}
+\def\tkzfn@drawpoints[#1]{\tkzfn@sp{\tkzfn@drawpoints@{#1}}}
+\def\tkzfn@drawpoints@#1(#2){%
+  \begingroup
+  \tkzfn@keys{points}{size=1.5pt}{#1}%
+  \tkzfn@lua{tkzfn.draw_points{list = "\tkzfn@E{#2}",
+    size = "\tkzfn@E\tkzfn@size", opts = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+\let\tkzFnDrawPoint\tkzFnDrawPoints
+
+\def\tkzFnMarkPoints{\@ifnextchar[{\tkzfn@markpoints}{\tkzfn@markpoints[]}}
+\def\tkzfn@markpoints[#1]{\tkzfn@sp{\tkzfn@markpoints@{#1}}}
+\def\tkzfn@markpoints@#1(#2)#3{%
+  \begingroup
+  \tkzfn@keys{points}{size=1.5pt}{#1}%
+  \tkzfn@lua{tkzfn.mark_points{f = "\tkzfn@E{#2}", list = "\tkzfn@E{#3}",
+    size = "\tkzfn@E\tkzfn@size", opts = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+\def\tkzFnLabelPoint{\@ifnextchar[{\tkzfn@labelpoint}{\tkzfn@labelpoint[above right]}}
+\def\tkzfn@labelpoint[#1]{\tkzfn@sp{\tkzfn@labelpoint@{#1}}}
+\def\tkzfn@labelpoint@#1(#2)#3{\node[#1] at (#2) {#3};}
+\def\tkzFnLabelPoints{\@ifnextchar[{\tkzfn@labelpoints}{\tkzfn@labelpoints[above right]}}
+\def\tkzfn@labelpoints[#1]{\tkzfn@sp{\tkzfn@labelpoints@{#1}}}
+\def\tkzfn@labelpoints@#1(#2){%
+  \foreach \tkzfn@p in {#2}{\node[#1] at (\tkzfn@p) {$\tkzfn@p$};}}
+
+\tkzfn@family{showcoord}{
+  xlabel/.store in   = \tkzfn@xlabel,
+  ylabel/.store in   = \tkzfn@ylabel,
+  decimals/.store in = \tkzfn@decimals}
+\def\tkzFnShowCoord{\@ifnextchar[{\tkzfn@showcoord}{\tkzfn@showcoord[]}}
+\def\tkzfn@showcoord[#1]{\tkzfn@sp{\tkzfn@showcoord@{#1}}}
+\def\tkzfn@showcoord@#1(#2){%
+  \begingroup
+  \tkzfn@keys{showcoord}{xlabel=,ylabel=,decimals=}{#1}%
+  \tkzfn@lua{tkzfn.show_coord{name = "\tkzfn@E{#2}",
+    xlabel = "\tkzfn@DM\tkzfn@xlabel", ylabel = "\tkzfn@DM\tkzfn@ylabel",
+    decimals = "\tkzfn@E\tkzfn@decimals", opts = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+\def\tkzFnPrintCoord{\@ifnextchar[{\tkzfn@printcoord}{\tkzfn@printcoord[]}}
+\def\tkzfn@printcoord[#1]{\tkzfn@sp{\tkzfn@printcoord@{#1}}}
+\def\tkzfn@printcoord@#1(#2){%
+  \tkzfn@lua{tkzfn.print_coord("\tkzfn@E{#2}","\tkzfn@E{#1}")}}
+
+% \tkzFnText[<TikZ>](x,y){text}  or  \tkzFnText[<TikZ>](A){text}
+\def\tkzFnText{\@ifnextchar[{\tkzfn@text}{\tkzfn@text[]}}
+\def\tkzfn@text[#1]{\tkzfn@sp{\tkzfn@text@{#1}}}
+\def\tkzfn@text@#1(#2)#3{%
+  \tkzfn@lua{tkzfn.position("\tkzfn@E{#2}")}%
+  \edef\tkzfn@tmp{\noexpand\node[tkzfn text,\unexpanded{#1}] at \tkzfnpos}%
+  \tkzfn@tmp{#3};}
+
+% ---------------------------------------------------------------------
+% tangent : \tkzFnTangent[kl=1,kr=1,draw,clip,<TikZ>](f,x)
+% kl, kr : lengths in x units of the frame (0 = no half tangent)
+% ---------------------------------------------------------------------
+\tkzfn@family{tangent}{
+  kl/.store in   = \tkzfn@kl,
+  kr/.store in   = \tkzfn@kr,
+  draw/.store in = \tkzfn@drawpt,
+  draw/.default  = true,
+  clip/.store in = \tkzfn@clip,
+  clip/.default  = true}
+\def\tkzFnTangent{\@ifnextchar[{\tkzfn@tangent}{\tkzfn@tangent[]}}
+\def\tkzfn@tangent[#1]{\tkzfn@sp{\tkzfn@tangent@{#1}}}
+\def\tkzfn@tangent@#1(#2,#3){%
+  \begingroup
+  \tkzfn@keys{tangent}{kl=1,kr=1,draw=false,clip=true}{#1}%
+  \tkzfn@lua{tkzfn.tangent{
+    f    = "\tkzfn@E{#2}",
+    x    = "\tkzfn@E{#3}",
+    kl   = "\tkzfn@E\tkzfn@kl",
+    kr   = "\tkzfn@E\tkzfn@kr",
+    draw = "\tkzfn@E\tkzfn@drawpt",
+    clip = "\tkzfn@E\tkzfn@clip",
+    opts = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+% ---------------------------------------------------------------------
+% areas : \tkzFnArea[domain,where,samples,clip,<TikZ>](f)  or  (f,g)
+% g : a function name or a number ; where = both | above | below
+% ---------------------------------------------------------------------
+\tkzfn@family{area}{
+  domain/.store in  = \tkzfn@domain,
+  samples/.store in = \tkzfn@samples,
+  where/.store in   = \tkzfn@where,
+  clip/.store in    = \tkzfn@clip,
+  clip/.default     = true}
+\def\tkzFnArea{\@ifnextchar[{\tkzfn@area}{\tkzfn@area[]}}
+\def\tkzfn@area[#1]{\tkzfn@sp{\tkzfn@area@{#1}}}
+\def\tkzfn@area@#1(#2){\tkzfn@area@split{#1}#2,,\@nil}
+\def\tkzfn@area@split#1#2,#3,#4\@nil{%
+  \begingroup
+  \tkzfn@keys{area}{domain=,samples=200,where=both,clip=true}{#1}%
+  \tkzfn@lua{tkzfn.area{
+    f       = "\tkzfn@E{#2}",
+    g       = "\tkzfn@E{#3}",
+    domain  = "\tkzfn@E\tkzfn@domain",
+    samples = "\tkzfn@E\tkzfn@samples",
+    where   = "\tkzfn@E\tkzfn@where",
+    clip    = "\tkzfn@E\tkzfn@clip",
+    opts    = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+% ---------------------------------------------------------------------
+% Riemann sums : \tkzFnRiemann[method,interval=a:b,number=n,<TikZ>](f)
+% method = left | right | mid | inf | sup
+% ---------------------------------------------------------------------
+\tkzfn@family{riemann}{
+  method/.store in   = \tkzfn@method,
+  interval/.store in = \tkzfn@interval,
+  number/.store in   = \tkzfn@number,
+  clip/.store in     = \tkzfn@clip,
+  clip/.default      = true}
+\def\tkzFnRiemann{\@ifnextchar[{\tkzfn@riemann}{\tkzfn@riemann[]}}
+\def\tkzfn@riemann[#1]{\tkzfn@sp{\tkzfn@riemann@{#1}}}
+\def\tkzfn@riemann@#1(#2){%
+  \begingroup
+  \tkzfn@keys{riemann}{method=left,interval=,number=10,clip=false}{#1}%
+  \tkzfn@lua{tkzfn.riemann{
+    f        = "\tkzfn@E{#2}",
+    method   = "\tkzfn@E\tkzfn@method",
+    interval = "\tkzfn@E\tkzfn@interval",
+    number   = "\tkzfn@E\tkzfn@number",
+    clip     = "\tkzfn@E\tkzfn@clip",
+    opts     = "\tkzfn@DM\tkzfn@tikz"}}%
+  \endgroup}
+
+% ---------------------------------------------------------------------
+% lines x = a and y = b ; data
+% \tkzFnVLines[<TikZ>]{list}  \tkzFnHLines[<TikZ>]{list}  (list: 1,2,...,5)
+% \tkzFnDrawData[<TikZ>]{x1/y1,x2/y2,...}
+% ---------------------------------------------------------------------
+\def\tkzFnVLines{\@ifnextchar[{\tkzfn@vlines}{\tkzfn@vlines[]}}
+\def\tkzfn@vlines[#1]#2{%
+  \tkzfn@lua{tkzfn.vlines{list = "\tkzfn@E{#2}", opts = "\tkzfn@D{#1}"}}}
+\let\tkzFnVLine\tkzFnVLines
+\def\tkzFnHLines{\@ifnextchar[{\tkzfn@hlines}{\tkzfn@hlines[]}}
+\def\tkzfn@hlines[#1]#2{%
+  \tkzfn@lua{tkzfn.hlines{list = "\tkzfn@E{#2}", opts = "\tkzfn@D{#1}"}}}
+\let\tkzFnHLine\tkzFnHLines
+
+\def\tkzFnDrawData{\@ifnextchar[{\tkzfn@data}{\tkzfn@data[]}}
+\def\tkzfn@data[#1]#2{%
+  \tkzfn@lua{tkzfn.data{list = "\tkzfn@E{#2}", opts = "\tkzfn@D{#1}"}}}
+
+% ---------------------------------------------------------------------
+% printing of results (fr / us)
+% \tkzFnPrint[decimals]{Lua expression}     ex. \tkzFnPrint{f(2)}
+% \tkzFnPrintInterval[oo|cc|oc|co]{a}{b}
+% ---------------------------------------------------------------------
+\def\tkzFnPrint{\@ifnextchar[{\tkzfn@print}{\tkzfn@print[]}}
+\def\tkzfn@print[#1]#2{%
+  \tkzfn@lua{tkzfn.print_number("\tkzfn@E{#2}","\tkzfn@E{#1}")}}
+
+\def\tkzFnPrintInterval{\@ifnextchar[{\tkzfn@printint}{\tkzfn@printint[cc]}}
+\def\tkzfn@printint[#1]#2#3{%
+  \tkzfn@lua{tkzfn.print_interval("\tkzfn@D{#2}","\tkzfn@D{#3}","\tkzfn@E{#1}")}}
+
+\endinput

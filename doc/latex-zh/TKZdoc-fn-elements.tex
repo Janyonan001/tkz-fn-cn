@@ -1,0 +1,47 @@
+\section{与 \tkzname{tkz-elements} 配合使用}\label{sec:elements}
+
+\tkzname{tkz-elements} 以厘米为单位工作，\tkzname{tkz-fn} 以坐标系单位工作。当加载 \tkzname{tkz-elements} 时，用 \tkzcname{tkzFnDefPoint} 或 \tkzcname{tkzFnDefPointXY} 定义的每个点同时存储在表 \texttt{z} 中，其坐标为厘米单位：
+
+\[ \texttt{z.A} = \left(\frac{x_A}{\text{xstep}}, \frac{y_A}{\text{ystep}}\right) \]
+
+之后该点可与 \tkzname{tkz-elements} 的对象配合使用：|circle(z.O, z.A)|、|line(z.A, z.B)| 等。反过来，|tkzfn.point_from_z("B")| 将点 \texttt{z.B} 带回坐标系，以便用 \tkzcname{tkzFnPrintCoord} 写出其坐标。
+
+\tkzBomb 若两个坐标轴的单位不同，|circle(z.O, z.A)| 在页面上是一个圆，但在坐标系中不是圆。
+
+\tkzHand \tkzname{tkz-elements} 不会被 \tkzname{tkz-fn} 自动加载；以下示例需要 |\usepackage{tkz-elements}|。
+
+\begin{tkzltxexample}[]
+\tkzFnDef{f}{x^2/2}
+\begin{tikzpicture}
+  \tkzFnInit[xmin=-3,xmax=3,ymin=-2,ymax=6,ystep=2]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[thick,red](f)
+  \tkzFnDefPoint(f,2){A}       % 坐标系中 A(2,2)，厘米制中 z.A = (2,1)
+  \tkzFnDefPointXY(0,0){O}
+  \directlua{
+    C.OA = circle(z.O, z.A)     % tkz-elements 以厘米工作
+    z.B  = C.OA.south
+  }
+  \tkzGetNodes
+  \draw[blue] (O) circle [radius=\tkzUseLua{C.OA.radius}];
+  \tkzFnDrawPoints[red](A,O)
+  \fill[blue] (B) circle (1.5pt) node[below right] {$B$};
+\end{tikzpicture}
+
+\directlua{tkzfn.point_from_z("B")}
+$B\tkzFnPrintCoord(B)$   % 坐标系中为 (0, -4.47)
+\end{tkzltxexample}
+
+\subsection{在 Lua 中}
+
+\tkzname{tkz-fn} 的对象在 Lua 中可用：
+\begin{itemize}
+  \item |FN.f(2)|：函数 $f$ 在 2 处的值；
+  \item |tkzfn.fct("sin(x)")|：创建函数（|FN.g = tkzfn.fct("sin(x)")|）；也可以直接传入 Lua 函数；
+  \item |tkzfn.derivative(f, x)|、|tkzfn.integral(f, a, b)|；
+  \item |tkzfn.to_page(x, y)| 和 |tkzfn.to_user(X, Y)|：坐标系与页面之间的转换；
+  \item |tkzfn.points.A|：坐标系中 $A$ 的坐标。
+\end{itemize}
+
+\endinput

@@ -1,0 +1,50 @@
+\section{From \tkzname{tkz-fct} to \tkzname{tkz-fn}}
+
+\subsection{Correspondence of the macros}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\tkzname{tkz-fct} / \tkzname{tkz-base} & \tkzname{tkz-fn} \\
+\midrule
+|\tkzInit| & |\tkzFnInit| \\
+|\tkzGrid[sub,subxstep,subystep]| & |\tkzFnGrid[sub,subdx,subdy]| \\
+|\tkzAxeXY|, |\tkzAxeX|, |\tkzAxeY| & |\tkzFnAxes|, |\tkzFnAxisX|, |\tkzFnAxisY| \\
+|\tkzDrawX|, |\tkzDrawXY| & |\tkzFnAxisX[ticks=false]|, |\tkzFnAxes[ticks=false]| \\
+|\tkzAxeX[trig=2]| & |\tkzFnAxisX[trig=2]| \\
+|\tkzClip|, |\tkzRep|, |\tkzText| & |\tkzFnClip|, |\tkzFnRep|, |\tkzFnText| \\
+|\tkzFct{x**2}| & |\tkzFnDraw{x^2}| or |\tkzFnDraw[name=f]{x^2}| \\
+|\tkzDefPointByFct(2)| & |\tkzFnDefPoint(f,2){A}| \\
+|\tkzDefPoint(1,2){A}| & |\tkzFnDefPointXY(1,2){A}| \\
+|\tkzDrawPoint|, |\tkzLabelPoint| & |\tkzFnDrawPoints|, |\tkzFnLabelPoint| \\
+|\tkzSetUpPoint| & style |tkzfn point| \\
+|\tkzPointShowCoord| & |\tkzFnShowCoord| \\
+|\tkzDrawTangentLine[with=b](1)| & |\tkzFnTangent(g,1)| \\
+|\tkzDrawArea[domain=1:2]| & |\tkzFnArea[domain=1:2](f)| \\
+|\tkzDrawAreafg[between=a and b]| & |\tkzFnArea(f,g)| \\
+|\tkzDrawRiemannSum|, |...Inf|, |...Sup| & |\tkzFnRiemann[method=left](f)|, |inf|, |sup| \\
+|\tkzDrawRiemannSumMid| & |\tkzFnRiemann[method=mid](f)| (see below) \\
+|\tkzFctPar|, |\tkzFctPolar| & |\tkzFnParam|, |\tkzFnPolar| \\
+|\tkzVLine(s)|, |\tkzHLine(s)| & |\tkzFnVLine(s)|, |\tkzFnHLine(s)| \\
+|\tkzDefSetOfPoints|, |\tkzDrawSetOfPoints| & |\tkzFnDrawData| \\
+|\tkzXH| & no equivalent yet \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{What changes}
+
+\begin{enumerate}
+  \item Expressions are Lua expressions: |x^2| instead of |x**2|, |ln(x)| or |log(x)| for the natural logarithm, |1/3| is a decimal quotient.
+  \item The variable is always |x|, even when \tkzname{xstep} is not 1: |\x| is no longer used.
+  \item A function is given by its name; the option \tkzname{with} and the references \texttt{a}, \texttt{b}, \dots\ are gone. There is no longer a limit of 26 functions.
+  \item \tkzcname{tkzFctLast} and \tkzcname{tkzFctgnua} no longer exist: to place points or tangent lines without drawing the curve, define the function with \tkzcname{tkzFnDef}.
+  \item \tkzimp{Horner} form is no longer needed and powers of negative numbers are correct.
+  \item The lengths \tkzname{kl} and \tkzname{kr} of the half tangent lines are always given in units of the $x$-axis; the style of the tangent lines (\tkzname{tkzfn tangent}) is empty by default, whereas \tkzname{tkz-fct} drew arrows.
+  \item With \tkzname{method=mid}, the height of a rectangle is the value at the midpoint of the interval; with \tkzname{tkz-fct}, it was the mean of the values at the endpoints.
+  \item Curves are clipped to the window and interrupted at vertical asymptotes.
+  \item Numbers are written in the American or the French format, without \tkzname{numprint}.
+  \item New presentations of the axes: arrows at both ends (\tkzname{arrows=both}) and ``box'' axes (\tkzname{box}).
+\end{enumerate}
+
+\endinput

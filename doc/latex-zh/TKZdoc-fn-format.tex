@@ -1,0 +1,93 @@
+\section{数值格式：美式或法式}\label{sec:format}
+
+\tkzname{tkz-fn} 写出的数字（刻度标签、坐标、计算结果）遵循以下两种惯例之一：
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& 美式格式 (\texttt{us}) & 法式格式 (\texttt{fr}) \\
+\midrule
+小数分隔符 & $3.14$ & $3{,}14$ \\
+千位分隔符 & $12{,}345$ & $12\,345$（细空格） \\
+区间 & $(a,\,b)$、$[a,\,b]$ & $\mathopen{]}a\,;\,b\mathclose{[}$、$\mathopen{[}a\,;\,b\mathclose{]}$ \\
+坐标 & $A(2,\,3)$ & $A(2\,;\,3)$ \\
+原点 & $0$ & $O$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+千位仅在五位以上数字处分隔：$1234$ 但 $\tkzFnPrint{12345}$。
+
+\subsection{选择格式}
+
+\begin{itemize}
+  \item 默认情况下，若文档开头 \tkzname{babel} 语言为法语则用法式格式，否则用美式格式。
+  \item 宏包选项强制指定格式：|\usepackage[us]{tkz-fn}| 或 |\usepackage[fr]{tkz-fn}|。
+  \item 文档中：|\tkzFnSetup{format=fr}|。
+\end{itemize}
+
+\begin{NewMacroBox}{tkzFnSetup}{\marg{选项}}
+\begin{tabular}{lll}
+\toprule
+选项             & 默认值 & 说明  \\
+\midrule
+\TOline{format}{us 或 fr}{数字格式}
+\TOline{decimals}{2}{\tkzcname{tkzFnPrint} 的最大小数位数}
+\TOline{axes}{school}{坐标轴样式：\texttt{school} 或 \texttt{box}}
+\TOline{arrows}{end}{坐标轴箭头：\texttt{end}、\texttt{both} 或 \texttt{none}}
+\bottomrule
+\end{tabular}
+\end{NewMacroBox}
+
+\subsection{输出结果：\tkzcname{tkzFnPrint}}
+
+\begin{NewMacroBox}{tkzFnPrint}{\oarg{小数位数}\marg{Lua 表达式}}
+\emph{计算表达式并写出四舍五入后的结果，不带多余的零。可以使用通过 \tkzcname{tkzFnDef} 定义的函数，以及 \texttt{diff(f,x)}、\texttt{integral(f,a,b)} 和 \texttt{riemann(f,a,b,n,"left")}。}
+\end{NewMacroBox}
+
+\begin{NewMacroBox}{tkzFnPrintInterval}{\oarg{oo, cc, oc 或 co}\marg{a}\marg{b}}
+\emph{写出区间；\texttt{o} = 开区间，\texttt{c} = 闭区间。端点为 Lua 表达式或 \TeX\ 文字（\texttt{-\textbackslash infty}）。}
+\end{NewMacroBox}
+
+\subsection{示例}
+
+\begin{tkzexample}[latex=6cm]
+\tkzFnDef{f}{x^2-2*x-1}
+\begin{tikzpicture}[scale=.5]
+  \tkzFnInit[xmin=-2,xmax=4,
+             ymin=-3,ymax=6]
+  \tkzFnGrid \tkzFnAxes
+  \tkzFnDraw[thick,red](f)
+  \tkzFnDefPoint[draw](f,3.5){A}
+\end{tikzpicture}
+
+$A\tkzFnPrintCoord(A)$，
+$f'(3)=\tkzFnPrint{diff(f,3)}$，
+$\tkzFnPrint[4]{f(0.25)}$，
+$\tkzFnPrint{1234567.891}$，
+$I=\tkzFnPrintInterval[oc]{-\infty}{2.5}$
+
+\tkzFnSetup{format=fr}
+$A\tkzFnPrintCoord(A)$，
+$f'(3)=\tkzFnPrint{diff(f,3)}$，
+$\tkzFnPrint[4]{f(0.25)}$，
+$\tkzFnPrint{1234567.891}$，
+$I=\tkzFnPrintInterval[oc]{-\infty}{2.5}$
+\tkzFnSetup{format=us}
+\end{tkzexample}
+
+\subsection{法式格式的刻度标签}
+
+\begin{tkzexample}[latex=7cm]
+\tkzFnSetup{format=fr}
+\begin{tikzpicture}[scale=.8]
+  \tkzFnInit[xmin=0,xmax=2,xstep=.25,
+             ymin=0,ymax=20000,ystep=4000]
+  \tkzFnGrid
+  \tkzFnAxes
+  \tkzFnDraw[blue,thick]{5000*x^2}
+\end{tikzpicture}
+\tkzFnSetup{format=us}
+\end{tkzexample}
+
+\endinput
