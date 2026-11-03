@@ -1,3 +1,4 @@
+
 # tkz-fn — Graphs of functions with  LuaLaTeX
 
 _Current release: **[2026/10/19 version 1.00c]**_
@@ -77,3 +78,7 @@ option) any later version. See `LICENSE` and `lppl-1-3c.txt`.
 
 This work has the LPPL maintenance status "maintained".
 The Current Maintainer of this work is Alain Matthes.
+
+# tkz-fn-cn
+tkz-fn-cn中文文档
+
