@@ -66,7 +66,8 @@ Expressions are Lua expressions: `x^2`, `sin(x)`, `ln(x)`, `exp(x)`,
 
 - `doc/tkz-fn-en.pdf`: documentation in American English
 - `doc/tkz-fn-fr.pdf`: documentation in French
-
+- `doc/tkz-fn-cn.pdf`: documentation in Chinese
+- 
 The sources are in `doc/latex-en` and `doc/latex-fr` (class `tkz-doc`, LuaLaTeX,
 makeindex).
 
