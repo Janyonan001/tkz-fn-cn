@@ -1,45 +1,38 @@
+# tkz-fn — 使用 LuaLaTeX 绘制函数图像
 
-# tkz-fn — Graphs of functions with  LuaLaTeX
+_当前版本：**[2026/10/19 version 1.00c]**_
 
-_Current release: **[2026/10/19 version 1.00c]**_
 
-`tkz-fn` draws graphs of functions with TikZ; every computation is done by Lua.
-It is the successor of `tkz-fct`: gnuplot, `fp.sty`, `tkz-base` and
-`--shell-escape` are no longer needed.
+`tkz-fn` 使用 TikZ 绘制函数图像；所有计算均由 Lua 完成。
+它是 `tkz-fct` 的继任者：不再需要 gnuplot、`fp.sty`、`tkz-base` 和
+`--shell-escape`。
 
-## Features
+## 功能特性
 
-- Curves y = f(x), parametric and polar curves; the curve is interrupted where
-  the function is not defined and at vertical asymptotes.
-- Tangent lines and one-sided tangent lines, areas under a curve or between two
-  curves, Riemann sums (left, right, mid, inf, sup).
-- Points on a curve, coordinates, texts, vertical and horizontal lines, data.
-- Results computed by Lua and written in the text: values, derivatives,
-  integrals, Riemann sums.
-- Two coordinate spaces: computations are done in the units of the coordinate
-  system (`xstep`, `ystep`), drawing is done in centimeters.
-- Numbers written in the American (`3.14`, `(a, b)`) or the French
-  (`3,14`, `]a ; b[`) format.
-- Axes as in school textbooks (arrow at one or both ends) or "box" axes as
-  with pgfplots, chosen with an option (no environment).
-- Optional bridge to `tkz-elements`: the points defined by `tkz-fn` are
-  available in the table `z`.
+- 曲线 y = f(x)、参数曲线和极坐标曲线；在函数无定义处以及垂直渐近线处，曲线会中断。
+- 切线及单侧切线、曲线下方面积或两条曲线之间的面积、黎曼和（左、右、中点、下确界、上确界）。
+- 曲线上的点、坐标、文本、垂直线和水平线、数据。
+- 由 Lua 计算并写入文本的结果：函数值、导数、积分、黎曼和。
+- 两种坐标空间：计算在坐标系的单位（`xstep`、`ystep`）中进行，绘制以厘米为单位进行。
+- 数字可采用美式（`3.14`、`(a, b)`）或法式（`3,14`、`]a ; b[`）格式书写。
+- 坐标轴可如学校教科书那样（一端或两端带箭头），也可如 pgfplots 那样使用“盒式”坐标轴，通过选项选择（无需环境）。
+- 可选连接到 `tkz-elements`：由 `tkz-fn` 定义的点可在表 `z` 中使用。
 
-## Requirements
+## 要求
 
 - LuaLaTeX
-- TikZ (loaded by the package, with the library `plotmarks`)
+- TikZ（由宏包加载，含 `plotmarks` 库）
 
-`tkz-fn` does not need `tkz-base` or `tkz-euclide`. All its macros begin with
-`\tkzFn`, so it can be used together with `tkz-fct`.
+`tkz-fn` 不需要 `tkz-base` 或 `tkz-euclide`。其所有宏均以
+`\tkzFn` 开头，因此可与 `tkz-fct` 一起使用。
 
-## Installation
+## 安装
 
-The package consists of two files: `tkz-fn.sty` and `tkz_fn.lua`.
-Put them in a folder known to TeX, for example `texmf/tex/latex/tkz-fn`,
-or in the folder of your document.
+该宏包由两个文件组成：`tkz-fn.sty` 和 `tkz_fn.lua`。
+将它们放入 TeX 可识别的文件夹，例如 `texmf/tex/latex/tkz-fn`，
+或放入文档所在文件夹。
 
-## Quick start
+## 快速开始
 
 ```latex
 % !TEX TS-program = lualatex
@@ -59,26 +52,26 @@ $f'(3) = \tkzFnPrint{diff(f,3)}$
 \end{document}
 ```
 
-Expressions are Lua expressions: `x^2`, `sin(x)`, `ln(x)`, `exp(x)`,
-`sqrt(x)`, `pi`, `e`.
+表达式为 Lua 表达式：`x^2`、`sin(x)`、`ln(x)`、`exp(x)`、
+`sqrt(x)`、`pi`、`e`。
 
-## Documentation
+## 文档
 
-- `doc/tkz-fn-en.pdf`: documentation in American English
-- `doc/tkz-fn-fr.pdf`: documentation in French
+- `doc/tkz-fn-en.pdf`：美式英语文档
+- `doc/tkz-fn-fr.pdf`：法语文档
+- `doc/tkz-fn-cn.pdf`：中文文档
 
-The sources are in `doc/latex-en` and `doc/latex-fr` (class `tkz-doc`, LuaLaTeX,
-makeindex).
+源文件位于 `doc/latex-en` 和 `doc/latex-fr`和`doc/latex-cn`（文档类为 `tkz-doc`，LuaLaTeX，
+makeindex）。
 
-## License
+## 许可证
 
-This work may be distributed and/or modified under the conditions of the
-LaTeX Project Public License, either version 1.3c of this license or (at your
-option) any later version. See `LICENSE` and `lppl-1-3c.txt`.
+本作品可在 LaTeX Project Public License 的条款下分发和/或修改，
+版本 1.3c 或（按您的选择）任何更高版本。参见 `LICENSE` 和 `lppl-1-3c.txt`。
 
-This work has the LPPL maintenance status "maintained".
-The Current Maintainer of this work is Alain Matthes.
+本作品的 LPPL 维护状态为“maintained”。
+本作品的当前维护者为 Alain Matthes。
 
 # tkz-fn-cn
-tkz-fn-cn中文文档
+tkz-fn-cn 中文文档
 
