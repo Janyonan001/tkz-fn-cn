@@ -57,12 +57,21 @@ $f'(3) = \tkzFnPrint{diff(f,3)}$
 
 ## 文档
 
+
 - `doc/tkz-fn-en.pdf`：美式英语文档
 - `doc/tkz-fn-fr.pdf`：法语文档
 - `doc/tkz-fn-cn.pdf`：中文文档
 
 源文件位于 `doc/latex-en` 和 `doc/latex-fr`和`doc/latex-cn`（文档类为 `tkz-doc`，LuaLaTeX，
 makeindex）。
+
+- `doc/tkz-fn-en.pdf`: documentation in American English
+- `doc/tkz-fn-fr.pdf`: documentation in French
+- `doc/tkz-fn-cn.pdf`: documentation in Chinese
+ 
+The sources are in `doc/latex-en` and `doc/latex-fr` and `doc/latex-cn` (class `tkz-doc`, LuaLaTeX,
+makeindex).
+
 
 ## 许可证
 
